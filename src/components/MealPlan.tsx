@@ -2,15 +2,22 @@ import React from "react";
 import recipes from "@/data/recipes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-interface MealPlanProps {
-  userProfile: {
-    // inserisci i campi di userProfile che ti servono per il piano, es:
-    sesso: string;
-    eta: number;
-    altezza: number;
-    peso: number;
-    attivita: string;
+interface UserProfile {
+  sesso: string;
+  eta: number;
+  altezza: number;
+  peso: number;
+  attivita: string;
+  fabbisogno: {
+    calories: number;
+    protein?: number;
+    carbs?: number;
+    fat?: number;
   };
+}
+
+interface MealPlanProps {
+  userProfile: UserProfile;
 }
 
 const MealPlan: React.FC<MealPlanProps> = ({ userProfile }) => {
@@ -23,7 +30,13 @@ const MealPlan: React.FC<MealPlanProps> = ({ userProfile }) => {
     });
   };
 
-  // Esempio: prendi ricette per i pasti classici
+  // Calcola le porzioni basandosi sul fabbisogno calorico per quel pasto
+  const calculatePortions = (recipe: any, dailyCalories: number) => {
+    const caloriesPerPortion = recipe.calories || 200; // default 200 se non specificato
+    const targetCaloriesPerMeal = dailyCalories / 3; // supponiamo 3 pasti principali
+    return Math.max(1, Math.round(targetCaloriesPerMeal / caloriesPerPortion));
+  };
+
   const colazioneRecipes = getRecipesForMeal("colazione");
   const pranzoRecipes = getRecipesForMeal("pranzo");
   const cenaRecipes = getRecipesForMeal("cena");
@@ -38,9 +51,14 @@ const MealPlan: React.FC<MealPlanProps> = ({ userProfile }) => {
         <CardContent>
           {colazioneRecipes.length > 0 ? (
             <ul>
-              {colazioneRecipes.map((r) => (
-                <li key={r.id}>{r.name}</li>
-              ))}
+              {colazioneRecipes.map((r) => {
+                const portions = calculatePortions(r, userProfile.fabbisogno.calories);
+                return (
+                  <li key={r.id}>
+                    {r.name} - {portions} porzione{portions > 1 ? "i" : ""}
+                  </li>
+                );
+              })}
             </ul>
           ) : (
             <p>Nessuna ricetta per la colazione</p>
@@ -55,9 +73,14 @@ const MealPlan: React.FC<MealPlanProps> = ({ userProfile }) => {
         <CardContent>
           {pranzoRecipes.length > 0 ? (
             <ul>
-              {pranzoRecipes.map((r) => (
-                <li key={r.id}>{r.name}</li>
-              ))}
+              {pranzoRecipes.map((r) => {
+                const portions = calculatePortions(r, userProfile.fabbisogno.calories);
+                return (
+                  <li key={r.id}>
+                    {r.name} - {portions} porzione{portions > 1 ? "i" : ""}
+                  </li>
+                );
+              })}
             </ul>
           ) : (
             <p>Nessuna ricetta per il pranzo</p>
@@ -72,9 +95,14 @@ const MealPlan: React.FC<MealPlanProps> = ({ userProfile }) => {
         <CardContent>
           {cenaRecipes.length > 0 ? (
             <ul>
-              {cenaRecipes.map((r) => (
-                <li key={r.id}>{r.name}</li>
-              ))}
+              {cenaRecipes.map((r) => {
+                const portions = calculatePortions(r, userProfile.fabbisogno.calories);
+                return (
+                  <li key={r.id}>
+                    {r.name} - {portions} porzione{portions > 1 ? "i" : ""}
+                  </li>
+                );
+              })}
             </ul>
           ) : (
             <p>Nessuna ricetta per la cena</p>
