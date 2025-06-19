@@ -2,36 +2,18 @@ import { useState } from "react";
 import { ProfileForm } from "./ProfileForm";
 import { MealPlan } from "./MealPlan";
 
-export default function Index() {
+export default function Home() {
   const [userProfile, setUserProfile] = useState(null);
-  const [mealPlan, setMealPlan] = useState(null);
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      {!userProfile && (
-        <ProfileForm onProfileSave={setUserProfile} />
+    <main className="max-w-5xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6">Crea il tuo piano alimentare personalizzato</h1>
+      <ProfileForm onProfileSave={setUserProfile} />
+      {userProfile && (
+        <div className="mt-10">
+          <MealPlan userProfile={userProfile} />
+        </div>
       )}
-
-      {userProfile && !mealPlan && (
-        <>
-          <button
-            onClick={() => setMealPlan(userProfile)}
-            className="mb-4 px-4 py-2 bg-blue-600 text-white rounded"
-          >
-            Genera Piano Alimentare Personalizzato
-          </button>
-          <button
-            onClick={() => setUserProfile(null)}
-            className="px-4 py-2 border rounded"
-          >
-            Modifica Profilo
-          </button>
-        </>
-      )}
-
-      {mealPlan && (
-        <MealPlan userProfile={mealPlan} />
-      )}
-    </div>
+    </main>
   );
 }
