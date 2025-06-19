@@ -2,19 +2,32 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { calculateBMR, calculateTDEE, calculateMacrosTarget, distributeMeals, generateDailyMenu } from "@/utils/nutritionUtils";
 import { foodDatabase } from "@/data/foodDatabase";
 import { recipes } from "@/data/recipes";
 import { UtensilsCrossed, Target, TrendingUp } from "lucide-react";
+import { DailyMenu, MacroNutrients } from "@/types/nutrition";
 
 interface MealPlanProps {
-  userProfile: any;
+  userProfile: {
+    sesso: string;
+    peso: number;
+    altezza: number;
+    eta: number;
+    attivita: string;
+  };
+}
+
+interface NutritionData {
+  bmr: number;
+  tdee: number;
+  macrosTarget: MacroNutrients;
+  mealDistribution: { [key: string]: number };
 }
 
 export const MealPlan = ({ userProfile }: MealPlanProps) => {
-  const [menuData, setMenuData] = useState(null);
-  const [nutritionData, setNutritionData] = useState(null);
+  const [menuData, setMenuData] = useState<DailyMenu | null>(null);
+  const [nutritionData, setNutritionData] = useState<NutritionData | null>(null);
 
   useEffect(() => {
     if (userProfile) {
@@ -97,7 +110,7 @@ export const MealPlan = ({ userProfile }: MealPlanProps) => {
           Piano Alimentare Giornaliero
         </h2>
         
-        {Object.entries(menuData).map(([mealName, mealData]: [string, any]) => (
+        {Object.entries(menuData).map(([mealName, mealData]) => (
           <Card key={mealName} className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
@@ -117,7 +130,7 @@ export const MealPlan = ({ userProfile }: MealPlanProps) => {
                     🍳 Ricetta: {mealData.ricetta}
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                    {Object.entries(mealData.ingredienti_ricetta).map(([ingredient, quantity]: [string, any]) => (
+                    {Object.entries(mealData.ingredienti_ricetta).map(([ingredient, quantity]) => (
                       <div key={ingredient} className="flex justify-between">
                         <span>{ingredient}</span>
                         <span className="font-medium">{quantity}g</span>
@@ -132,7 +145,7 @@ export const MealPlan = ({ userProfile }: MealPlanProps) => {
                 <div className="mb-4">
                   <h4 className="font-semibold mb-2">🥕 Ingredienti aggiuntivi:</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                    {mealData.ingredienti_extra.map(([ingredient, quantity]: [string, number], index: number) => (
+                    {mealData.ingredienti_extra.map(([ingredient, quantity], index) => (
                       <div key={index} className="flex justify-between p-2 bg-gray-50 rounded">
                         <span>{ingredient}</span>
                         <span className="font-medium">{quantity}g</span>

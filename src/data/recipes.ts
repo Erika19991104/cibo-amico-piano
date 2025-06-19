@@ -1,6 +1,7 @@
+import { RecipeDatabase } from "@/types/nutrition";
 
 // Database delle ricette con ingredienti e quantità
-export const recipes = {
+export const recipes: RecipeDatabase = {
   "Pasta al pomodoro": {
     ingredienti: {
       "Pasta di semola": "100",

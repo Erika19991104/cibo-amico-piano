@@ -1,4 +1,6 @@
 
+import { FoodDatabase, RecipeDatabase, MacroNutrients, DailyMenu, MealData, Recipe, FoodItem } from "@/types/nutrition";
+
 export const calculateBMR = (sesso: string, peso: number, altezza: number, eta: number): number => {
   if (sesso === "Uomo") {
     return 10 * peso + 6.25 * altezza - 5 * eta + 5;
@@ -18,7 +20,7 @@ export const calculateTDEE = (bmr: number, attivita: string): number => {
   return bmr * factors[attivita as keyof typeof factors];
 };
 
-export const calculateMacrosTarget = (tdee: number) => {
+export const calculateMacrosTarget = (tdee: number): MacroNutrients => {
   return {
     carboidrati: (tdee * 0.50) / 4,
     proteine: (tdee * 0.20) / 4,
@@ -26,7 +28,7 @@ export const calculateMacrosTarget = (tdee: number) => {
   };
 };
 
-export const distributeMeals = (tdee: number) => {
+export const distributeMeals = (tdee: number): { [key: string]: number } => {
   return {
     "Colazione": Math.round(tdee * 0.20),
     "Spuntino mattina": Math.round(tdee * 0.10),
@@ -36,7 +38,7 @@ export const distributeMeals = (tdee: number) => {
   };
 };
 
-export const macrosPerMeal = (totalMacros: any) => {
+export const macrosPerMeal = (totalMacros: MacroNutrients): { [key: string]: MacroNutrients } => {
   const percentages = {
     "Colazione": { carboidrati: 0.25, proteine: 0.20, grassi: 0.20 },
     "Spuntino mattina": { carboidrati: 0.10, proteine: 0.10, grassi: 0.10 },
@@ -45,7 +47,7 @@ export const macrosPerMeal = (totalMacros: any) => {
     "Cena": { carboidrati: 0.25, proteine: 0.25, grassi: 0.25 }
   };
 
-  const mealMacros: any = {};
+  const mealMacros: { [key: string]: MacroNutrients } = {};
   for (const [meal, perc] of Object.entries(percentages)) {
     mealMacros[meal] = {
       carboidrati: totalMacros.carboidrati * perc.carboidrati,
@@ -56,12 +58,12 @@ export const macrosPerMeal = (totalMacros: any) => {
   return mealMacros;
 };
 
-export const calculateRecipeValues = (recipe: any, foodDb: any) => {
+export const calculateRecipeValues = (recipe: Recipe, foodDb: FoodDatabase): { Energia: number; Proteine: number; Grassi: number; Carboidrati: number } => {
   const results = { Energia: 0, Proteine: 0, Grassi: 0, Carboidrati: 0 };
   
   for (const [ingredient, quantity] of Object.entries(recipe.ingredienti)) {
     const cleanName = ingredient.split(" (")[0].trim().toLowerCase();
-    const q = parseFloat(quantity as string);
+    const q = parseFloat(quantity);
 
     // Ricerca diretta nel database
     const foundFood = Object.entries(foodDb).find(([name]) => 
@@ -69,7 +71,7 @@ export const calculateRecipeValues = (recipe: any, foodDb: any) => {
     );
 
     if (foundFood) {
-      const [, values] = foundFood;
+      const [, values]: [string, FoodItem] = foundFood;
       results.Energia += values.Energia * q / 100;
       results.Proteine += values.Proteine * q / 100;
       results.Grassi += values.Lipidi * q / 100;
@@ -80,8 +82,8 @@ export const calculateRecipeValues = (recipe: any, foodDb: any) => {
   return results;
 };
 
-export const generateDailyMenu = (foodDb: any, recipes: any, mealKcal: any, totalMacros: any) => {
-  const menu: any = {};
+export const generateDailyMenu = (foodDb: FoodDatabase, recipes: RecipeDatabase, mealKcal: { [key: string]: number }, totalMacros: MacroNutrients): DailyMenu => {
+  const menu: DailyMenu = {};
   const mealMacros = macrosPerMeal(totalMacros);
   
   // Inizializza tutti i pasti

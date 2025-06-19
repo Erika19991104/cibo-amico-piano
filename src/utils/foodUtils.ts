@@ -1,5 +1,5 @@
 
-import { foodDatabase } from "@/data/foodDatabase";
+import { FoodDatabase } from "@/types/nutrition";
 
 // Funzione per calcolare la similarità tra due stringhe (algoritmo di Levenshtein semplificato)
 const calculateSimilarity = (str1: string, str2: string): number => {
@@ -46,7 +46,7 @@ const levenshteinDistance = (str1: string, str2: string): number => {
   return matrix[str2.length][str1.length];
 };
 
-export const searchFoodFuzzy = (query: string, database: any) => {
+export const searchFoodFuzzy = (query: string, database: FoodDatabase) => {
   const results = [];
   
   for (const [foodName, foodData] of Object.entries(database)) {

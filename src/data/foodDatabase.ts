@@ -1,6 +1,7 @@
+import { FoodDatabase } from "@/types/nutrition";
 
 // Database semplificato degli alimenti con i principali macronutrienti
-export const foodDatabase = {
+export const foodDatabase: FoodDatabase = {
   "Pasta di semola": {
     categoria: "Cereali e derivati",
     Energia: 353,
