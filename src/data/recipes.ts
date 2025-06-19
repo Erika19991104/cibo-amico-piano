@@ -293,5 +293,220 @@ export const recipes: RecipeDatabase = {
       "Pomodori maturi": "100",
       "Olio extravergine oliva": "10"
     }
-  }
+  },
+{
+      "nome": "Porridge con avena e frutta",
+      "ingredienti": {
+        "Fiocchi d'avena (g)": 50,
+        "Banana (g)": 100,
+        "Semi di chia (g)": 10
+      },
+      "procedimento": "Cuoci l'avena nel latte fino a ottenere una crema. Aggiungi la banana a fette, i semi di chia e un filo di miele.",
+      "categoria": "Colazione",
+      "tags": ["vegetariano", "light", "veloce", "proteico"]
+    },
+    {
+      "nome": "Insalata di quinoa e ceci",
+      "ingredienti": {
+        "Quinoa (g)": 80,
+        "Ceci lessati (g)": 100,
+        "Pomodorini (g)": 100,
+        "Cetriolo (g)": 100,
+        "Prezzemolo (g)": 5,
+        "Olio extravergine d'oliva (ml)": 10,
+        "Limone (ml)": 10,
+        "Sale (g)": 1
+      },
+      "procedimento": "Cuoci la quinoa. Mescola con ceci, pomodorini, cetriolo e prezzemolo. Condisci con olio, limone e sale.",
+      "categoria": "Primo",
+      "tags": ["vegetariano", "legumi", "gluten free", "light"]
+    },
+    {
+      "nome": "Filetto di trota al forno con broccoli",
+      "ingredienti": {
+        "Filetto di trota (g)": 180,
+        "Broccoli (g)": 150,
+        "Olio extravergine d'oliva (ml)": 10,
+        "Limone (ml)": 15,
+        "Sale (g)": 1,
+        "Pepe (g)": 0.5,
+        "Prezzemolo (g)": 5
+      },
+      "procedimento": "Disponi il filetto di trota e i broccoli su una teglia, condisci con olio, limone, sale, pepe e prezzemolo. Inforna a 180°C per 20 min.",
+      "categoria": "Secondo",
+      "tags": ["pesce", "forno", "gluten free", "light"]
+    },
+    {
+      "nome": "Polpette di lenticchie con salsa yogurt",
+      "ingredienti": {
+        "Lenticchie lessate (g)": 150,
+        "Pangrattato integrale (g)": 30,
+        "Uovo (g)": 50,
+        "Prezzemolo (g)": 5,
+        "Sale (g)": 1,
+        "Pepe (g)": 0.5,
+        "Yogurt greco magro (g)": 100,
+        "Succo di limone (ml)": 10
+      },
+      "procedimento": "Frulla lenticchie, pangrattato, uovo, prezzemolo, sale e pepe. Forma polpette e cuoci in forno a 180°C per 15-20 min. Servi con salsa yogurt e limone.",
+      "categoria": "Secondo",
+      "tags": ["vegetariano", "forno", "light", "proteico"]
+    },
+    {
+      "nome": "Smoothie spinaci e banana",
+      "ingredienti": {
+        "Spinaci freschi (g)": 50,
+        "Banana (g)": 100,
+        "Yogurt greco magro (g)": 150,
+        "Semi di lino (g)": 10,
+        "Latte scremato (ml)": 100
+      },
+      "procedimento": "Frulla tutti gli ingredienti fino a ottenere una consistenza liscia.",
+      "categoria": "Colazione",
+      "tags": ["vegetariano", "light", "veloce", "proteico"]
+    },
+    {
+      "nome": "Insalata di farro con feta e olive",
+      "ingredienti": {
+        "Farro (g)": 80,
+        "Feta (g)": 50,
+        "Pomodorini (g)": 100,
+        "Olive nere (g)": 30,
+        "Basilico (g)": 5,
+        "Olio extravergine d'oliva (ml)": 10,
+        "Sale (g)": 1,
+        "Pepe (g)": 0.5
+      },
+      "procedimento": "Cuoci il farro. Mescola con feta, pomodorini, olive e basilico. Condisci con olio, sale e pepe.",
+      "categoria": "Primo",
+      "tags": ["vegetariano", "light"]
+    },
+    {
+      "nome": "Petto di tacchino alla griglia con zucchine",
+      "ingredienti": {
+        "Petto di tacchino (g)": 200,
+        "Zucchine (g)": 150,
+        "Olio extravergine d'oliva (ml)": 10,
+        "Sale (g)": 1,
+        "Pepe (g)": 0.5,
+        "Rosmarino (g)": 2
+      },
+      "procedimento": "Griglia il tacchino e le zucchine con olio, sale, pepe e rosmarino.",
+      "categoria": "Secondo",
+      "tags": ["carne bianca", "light", "veloce"]
+    },
+    {
+      "nome": "Pasta integrale con crema di zucca",
+      "ingredienti": {
+        "Pasta integrale (g)": 160,
+        "Zucca (g)": 200,
+        "Olio extravergine d'oliva (ml)": 10,
+        "Rosmarino (g)": 2,
+        "Sale (g)": 1,
+        "Pepe (g)": 0.5
+      },
+      "procedimento": "Cuoci la zucca e frullala con olio, rosmarino, sale e pepe. Cuoci la pasta e condiscila con la crema.",
+      "categoria": "Primo",
+      "tags": ["vegetariano", "light"]
+    },
+    {
+      "nome": "Bastoncini di carote e sedano con hummus",
+      "ingredienti": {
+        "Carote (g)": 100,
+        "Sedano (g)": 100,
+        "Hummus (g)": 50
+      },
+      "procedimento": "Taglia carote e sedano a bastoncini e servi con hummus.",
+      "categoria": "Snack",
+      "tags": ["vegetariano", "light", "veloce"]
+    },
+    {
+      "nome": "Mandorle tostate",
+      "ingredienti": {
+        "Mandorle (g)": 30
+      },
+      "procedimento": "Tosta le mandorle in padella a fuoco medio per qualche minuto, mescolando spesso.",
+      "categoria": "Snack",
+      "tags": ["vegetariano", "light", "proteico"]
+    },
+    {
+      "nome": "Smoothie proteico con latte di mandorla",
+      "ingredienti": {
+        "Latte di mandorla (ml)": 200,
+        "Proteine in polvere (g)": 30,
+        "Banana (g)": 100,
+        "Semi di chia (g)": 10
+      },
+      "procedimento": "Frulla tutti gli ingredienti fino a ottenere una consistenza liscia.",
+      "categoria": "Colazione",
+      "tags": ["light", "proteico", "veloce"]
+    },
+    {
+      "nome": "Insalata di pollo e avocado",
+      "ingredienti": {
+        "Petto di pollo lessato (g)": 150,
+        "Avocado (g)": 100,
+        "Pomodoro (g)": 100,
+        "Mais (g)": 50,
+        "Lattuga (g)": 80,
+        "Olio extravergine d'oliva (ml)": 10,
+        "Sale (g)": 1,
+        "Pepe (g)": 0.5
+      },
+      "procedimento": "Mescola tutti gli ingredienti e condisci con olio, sale e pepe.",
+      "categoria": "Piatto unico",
+      "tags": ["carne bianca", "light", "veloce"]
+    },
+    {
+      "nome": "Merluzzo al cartoccio con patate dolci",
+      "ingredienti": {
+        "Filetto di merluzzo (g)": 200,
+        "Patate dolci (g)": 150,
+        "Olio extravergine d'oliva (ml)": 10,
+        "Limone (ml)": 15,
+        "Prezzemolo (g)": 5,
+        "Sale (g)": 1,
+        "Pepe (g)": 0.5
+      },
+      "procedimento": "Metti merluzzo e patate dolci in cartoccio con olio, limone, prezzemolo, sale e pepe. Cuoci in forno a 180°C per 25 min.",
+      "categoria": "Secondo",
+      "tags": ["pesce", "forno", "light"]
+    },
+    {
+      "nome": "Riso basmati con curry di verdure e ceci",
+      "ingredienti": {
+        "Riso basmati (g)": 150,
+        "Ceci lessati (g)": 100,
+        "Zucchine (g)": 100,
+        "Peperoni (g)": 100,
+        "Curry in polvere (g)": 5,
+        "Olio extravergine d'oliva (ml)": 10,
+        "Sale (g)": 1
+      },
+      "procedimento": "Cuoci il riso. In padella salta le verdure e ceci con curry e olio. Unisci il riso e salta tutto insieme.",
+      "categoria": "Primo",
+      "tags": ["vegetariano", "legumi", "light"]
+    },
+    {
+      "nome": "Pancakes integrali con frutti di bosco",
+      "ingredienti": {
+        "Farina integrale (g)": 80,
+        "Latte scremato (ml)": 150,
+        "Uovo (g)": 50,
+        "Lievito per dolci (g)": 5,
+        "Frutti di bosco (g)": 100,
+        "Miele (g)": 10
+      },
+      "procedimento": "Mescola farina, latte, uovo e lievito. Cuoci i pancakes in padella antiaderente. Servi con frutti di bosco e miele.",
+      "categoria": "Colazione",
+      "tags": ["vegetariano", "light"]
+    },
+    {
+      "nome": "Insalata di couscous con verdure e pollo",
+      "ingredienti": {
+        "Couscous (g)": 80,
+        "Petto di pollo grigliato (g)": 150,
+        "Zucchine grigliate (g)": 100,
+        "Pomodori secchi (g)": 30,
+        "Olio extravergine d'oliva (ml)": 10,
 };
