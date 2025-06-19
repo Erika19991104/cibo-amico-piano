@@ -8,17 +8,9 @@ import { MealPlan } from "@/components/MealPlan";
 import { User, Calculator, Search, UtensilsCrossed } from "lucide-react";
 import { generaPiano } from "@/utils/generaPiano";
 
-import { generateMealPlan } from "@/utils/recipeHelpers";
-
 const Index = () => {
   const [userProfile, setUserProfile] = useState(null);
-  const [mealPlan, setMealPlan] = useState(null);
-
-  // Funzione per calcolare fabbisogno calorico da userProfile (da adattare)
-  function calculateCalorieNeeds(profile) {
-    // Esempio semplice: userProfile deve avere calorieNeeds o calcolalo qui
-    return profile?.calorieNeeds || 2000;
-  }
+  const [mealPlan, setMealPlan] = useState<any[]>([]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
@@ -96,12 +88,13 @@ const Index = () => {
                       <p>Altezza: {userProfile.altezza} cm, Peso: {userProfile.peso} kg</p>
                       <p>Attività: {userProfile.attivita}</p>
                     </div>
-                    <Button
+                    <Button 
                       onClick={() => {
-                        const calorieNeeds = calculateCalorieNeeds(userProfile);
-                        const plan = generateMealPlan(calorieNeeds);
-                        setMealPlan(plan);
-                      }}
+                        if (userProfile) {
+                          const piano = generaPiano(userProfile);
+                          setMealPlan(piano);
+                        }
+                      }} 
                       className="w-full"
                       size="lg"
                     >
@@ -127,7 +120,7 @@ const Index = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {mealPlan ? (
+                {mealPlan.length ? (
                   <MealPlan mealPlan={mealPlan} />
                 ) : (
                   <div className="text-center py-8 text-gray-500">
