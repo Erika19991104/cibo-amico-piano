@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileForm } from "@/components/ProfileForm";
 import { FoodSearch } from "@/components/FoodSearch";
-import { MealPlan } from "@/components/MealPlan";
+import MealPlan from "@/components/MealPlan"; // attenzione: import senza parentesi
 import { User, Calculator, Search, UtensilsCrossed } from "lucide-react";
 
 import recipes from "@/data/recipes";
@@ -18,6 +18,7 @@ const Index = () => {
 
     const totalCalories = userProfile.calorieTarget || 2000;
 
+    // Distribuzione calorie per pasto
     const mealDistribution: Record<string, number> = {
       Colazione: 0.25,
       Pranzo: 0.35,
@@ -28,7 +29,14 @@ const Index = () => {
     const mealPlan = Object.entries(mealDistribution).map(([meal, percent]) => {
       const targetCalories = totalCalories * percent;
 
-      const mealRecipes = recipes.filter(r => r.category?.includes(meal));
+      // Filtra ricette che contengono la categoria (case insensitive)
+      const mealRecipes = recipes.filter(
+        (r) =>
+          r.category &&
+          r.category.some((cat: string) =>
+            cat.toLowerCase().includes(meal.toLowerCase())
+          )
+      );
 
       let accCalories = 0;
       const selectedRecipes = [];
@@ -37,6 +45,7 @@ const Index = () => {
         if (accCalories >= targetCalories) break;
 
         const calories = recipe.calories || 0;
+        // Porzione in percentuale (massimo 1)
         const portion = Math.min(1, (targetCalories - accCalories) / (calories || 1));
 
         accCalories += portion * calories;
