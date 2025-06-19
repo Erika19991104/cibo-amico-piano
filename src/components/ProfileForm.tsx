@@ -24,7 +24,7 @@ export const ProfileForm = ({ onProfileSave }: ProfileFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     if (!formData.sesso || !formData.attivita || !formData.obiettivo) {
       toast({
         title: "Errore",
@@ -44,7 +44,7 @@ export const ProfileForm = ({ onProfileSave }: ProfileFormProps) => {
   const handleDietaChange = (value: string, checked: boolean) => {
     setFormData(prev => ({
       ...prev,
-      dieta: checked
+      dieta: checked 
         ? [...prev.dieta, value]
         : prev.dieta.filter(item => item !== value)
     }));
@@ -53,14 +53,10 @@ export const ProfileForm = ({ onProfileSave }: ProfileFormProps) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Colonna sinistra */}
         <div className="space-y-4">
           <div>
             <Label htmlFor="sesso">Sesso *</Label>
-            <Select
-              value={formData.sesso}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, sesso: value }))}
-            >
+            <Select value={formData.sesso} onValueChange={(value) => setFormData(prev => ({...prev, sesso: value}))}>
               <SelectTrigger>
                 <SelectValue placeholder="Seleziona sesso" />
               </SelectTrigger>
@@ -75,10 +71,10 @@ export const ProfileForm = ({ onProfileSave }: ProfileFormProps) => {
             <Label htmlFor="eta">Età</Label>
             <Input
               type="number"
-              min="18"
-              max="80"
+              min={18}
+              max={80}
               value={formData.eta}
-              onChange={(e) => setFormData(prev => ({ ...prev, eta: parseInt(e.target.value) }))}
+              onChange={(e) => setFormData(prev => ({...prev, eta: parseInt(e.target.value)}))}
             />
           </div>
 
@@ -86,10 +82,10 @@ export const ProfileForm = ({ onProfileSave }: ProfileFormProps) => {
             <Label htmlFor="altezza">Altezza (cm)</Label>
             <Input
               type="number"
-              min="140"
-              max="220"
+              min={140}
+              max={220}
               value={formData.altezza}
-              onChange={(e) => setFormData(prev => ({ ...prev, altezza: parseInt(e.target.value) }))}
+              onChange={(e) => setFormData(prev => ({...prev, altezza: parseInt(e.target.value)}))}
             />
           </div>
 
@@ -97,23 +93,19 @@ export const ProfileForm = ({ onProfileSave }: ProfileFormProps) => {
             <Label htmlFor="peso">Peso (kg)</Label>
             <Input
               type="number"
-              min="40"
-              max="200"
-              step="0.1"
+              min={40}
+              max={200}
+              step={0.1}
               value={formData.peso}
-              onChange={(e) => setFormData(prev => ({ ...prev, peso: parseFloat(e.target.value) }))}
+              onChange={(e) => setFormData(prev => ({...prev, peso: parseFloat(e.target.value)}))}
             />
           </div>
         </div>
 
-        {/* Colonna destra */}
         <div className="space-y-4">
           <div>
             <Label htmlFor="attivita">Attività fisica *</Label>
-            <Select
-              value={formData.attivita}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, attivita: value }))}
-            >
+            <Select value={formData.attivita} onValueChange={(value) => setFormData(prev => ({...prev, attivita: value}))}>
               <SelectTrigger>
                 <SelectValue placeholder="Seleziona livello attività" />
               </SelectTrigger>
@@ -129,17 +121,14 @@ export const ProfileForm = ({ onProfileSave }: ProfileFormProps) => {
 
           <div>
             <Label htmlFor="obiettivo">Obiettivo *</Label>
-            <Select
-              value={formData.obiettivo}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, obiettivo: value }))}
-            >
+            <Select value={formData.obiettivo} onValueChange={(value) => setFormData(prev => ({...prev, obiettivo: value}))}>
               <SelectTrigger>
                 <SelectValue placeholder="Seleziona obiettivo" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="dimagrimento">Dimagrimento</SelectItem>
-                <SelectItem value="mantenimento">Mantenimento</SelectItem>
-                <SelectItem value="massa">Aumento Massa</SelectItem>
+                <SelectItem value="Dimagrimento">Dimagrimento</SelectItem>
+                <SelectItem value="Mantenimento">Mantenimento</SelectItem>
+                <SelectItem value="Aumento Massa">Aumento Massa</SelectItem>
               </SelectContent>
             </Select>
           </div>
