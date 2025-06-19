@@ -511,4 +511,4 @@ export const recipes: RecipeDatabase = {
     mealTime: "Spuntino",
   }
   
-};
+}
