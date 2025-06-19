@@ -15,8 +15,10 @@ const Index = () => {
 
   const handleGenerateMealPlan = () => {
     console.log("Funzione handleGenerateMealPlan chiamata");
-    if (!userProfile) return;
+    alert("Funzione handleGenerateMealPlan chiamata");
 
+    if (!userProfile) return;
+    console.log("Nessun profilo utente presente");
     const totalCalories = userProfile.calorieTarget || 2000;
 
     // Distribuzione calorie per pasto
