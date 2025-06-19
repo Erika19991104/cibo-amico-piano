@@ -6,11 +6,49 @@ import { ProfileForm } from "@/components/ProfileForm";
 import { FoodSearch } from "@/components/FoodSearch";
 import { MealPlan } from "@/components/MealPlan";
 import { User, Calculator, Search, UtensilsCrossed } from "lucide-react";
-import { generaPiano } from "@/utils/generaPiano";
+
+import recipes from "@/data/recipes";
 
 const Index = () => {
   const [userProfile, setUserProfile] = useState(null);
-  const [mealPlan, setMealPlan] = useState<any[]>([]);
+  const [mealPlan, setMealPlan] = useState(null);
+
+  const handleGenerateMealPlan = () => {
+    if (!userProfile) return;
+
+    const totalCalories = userProfile.calorieTarget || 2000;
+
+    const mealDistribution: Record<string, number> = {
+      Colazione: 0.25,
+      Pranzo: 0.35,
+      Cena: 0.3,
+      Spuntino: 0.1,
+    };
+
+    const mealPlan = Object.entries(mealDistribution).map(([meal, percent]) => {
+      const targetCalories = totalCalories * percent;
+
+      const mealRecipes = recipes.filter(r => r.category?.includes(meal));
+
+      let accCalories = 0;
+      const selectedRecipes = [];
+
+      for (const recipe of mealRecipes) {
+        if (accCalories >= targetCalories) break;
+
+        const calories = recipe.calories || 0;
+        const portion = Math.min(1, (targetCalories - accCalories) / (calories || 1));
+
+        accCalories += portion * calories;
+
+        selectedRecipes.push({ recipe, portion });
+      }
+
+      return { categoria: meal, ricette: selectedRecipes };
+    });
+
+    setMealPlan(mealPlan);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
@@ -89,12 +127,7 @@ const Index = () => {
                       <p>Attività: {userProfile.attivita}</p>
                     </div>
                     <Button 
-                      onClick={() => {
-                        if (userProfile) {
-                          const piano = generaPiano(userProfile);
-                          setMealPlan(piano);
-                        }
-                      }} 
+                      onClick={handleGenerateMealPlan} 
                       className="w-full"
                       size="lg"
                     >
@@ -120,7 +153,7 @@ const Index = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {mealPlan.length ? (
+                {mealPlan ? (
                   <MealPlan mealPlan={mealPlan} />
                 ) : (
                   <div className="text-center py-8 text-gray-500">
