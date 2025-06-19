@@ -296,7 +296,16 @@ export const recipes: RecipeDatabase = {
       "Pomodori maturi": "150",
       "Olio extravergine oliva": "15",
     },
-    mealTime: "Cena/Pranzo",
+    mealTime: "Cena",
+  },
+  "Insalata proteica": {
+    ingredienti: {
+      "Tonno in scatola": "80",
+      "Fagioli cannellini": "100",
+      "Pomodori maturi": "150",
+      "Olio extravergine oliva": "15",
+    },
+    mealTime: "Pranzo",
   },
   "Omelette alle verdure": {
     ingredienti: {
@@ -323,7 +332,17 @@ export const recipes: RecipeDatabase = {
       "Semi di chia": "10",
       "Miele": "10",
     },
-    mealTime: "Colazione/Spuntino",
+    mealTime: "Colazione",
+  },
+  "Porridge avena e banana": {
+    ingredienti: {
+      "Fiocchi d'avena": "50",
+      "Latte scremato": "200",
+      "Banana": "100",
+      "Semi di chia": "10",
+      "Miele": "10",
+    },
+    mealTime: "Spuntino",
   },
   "Insalata di quinoa e ceci": {
     ingredienti: {
@@ -336,7 +355,19 @@ export const recipes: RecipeDatabase = {
       "Limone": "10",
       "Sale": "1",
     },
-    mealTime: "Cena/Pranzo",
+    mealTime: "Pranzo",
+    "Insalata di quinoa e ceci": {
+    ingredienti: {
+      "Quinoa": "80",
+      "Ceci lessati": "100",
+      "Pomodorini": "100",
+      "Cetriolo": "100",
+      "Prezzemolo": "5",
+      "Olio extravergine oliva": "10",
+      "Limone": "10",
+      "Sale": "1",
+    },
+    mealTime: "Cena",
   },
   "Filetto di trota al forno": {
     ingredienti: {
