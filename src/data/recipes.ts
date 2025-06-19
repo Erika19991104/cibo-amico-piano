@@ -298,7 +298,7 @@ export const recipes: RecipeDatabase = {
     },
     mealTime: "Cena",
   },
-  "Insalata proteica": {
+  "Insalata proteica1": {
     ingredienti: {
       "Tonno in scatola": "80",
       "Fagioli cannellini": "100",
@@ -334,7 +334,7 @@ export const recipes: RecipeDatabase = {
     },
     mealTime: "Colazione",
   },
-  "Porridge avena e banana": {
+  "Porridge avena e banana1": {
     ingredienti: {
       "Fiocchi d'avena": "50",
       "Latte scremato": "200",
@@ -355,8 +355,8 @@ export const recipes: RecipeDatabase = {
       "Limone": "10",
       "Sale": "1",
     },
-    mealTime: "Pranzo",
-    "Insalata di quinoa e ceci": {
+    mealTime: "Pranzo"},
+    "Insalata di quinoa e ceci 2": {
     ingredienti: {
       "Quinoa": "80",
       "Ceci lessati": "100",

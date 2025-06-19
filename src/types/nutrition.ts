@@ -9,6 +9,7 @@ export interface FoodItem {
 
 export interface Recipe {
   ingredienti: { [key: string]: string };
+  mealTime: string;
 }
 
 export interface MacroNutrients {

@@ -4,10 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileForm } from "@/components/ProfileForm";
 import { FoodSearch } from "@/components/FoodSearch";
-import MealPlan from "@/components/MealPlan"; // attenzione: import senza parentesi
+import MealPlan from "@/components/MealPlan"; // import senza parentesi
 import { User, Calculator, Search, UtensilsCrossed } from "lucide-react";
 
-import recipes from "@/data/recipes";
+import { recipes } from "../data/recipes";
 
 const Index = () => {
   const [userProfile, setUserProfile] = useState(null);
@@ -17,11 +17,13 @@ const Index = () => {
     console.log("Funzione handleGenerateMealPlan chiamata");
     alert("Funzione handleGenerateMealPlan chiamata");
 
-    if (!userProfile) return;
-    console.log("Nessun profilo utente presente");
+    if (!userProfile) {
+      console.log("Nessun profilo utente presente");
+      return;
+    }
+
     const totalCalories = userProfile.calorieTarget || 2000;
 
-    // Distribuzione calorie per pasto
     const mealDistribution: Record<string, number> = {
       Colazione: 0.25,
       Pranzo: 0.35,
@@ -29,17 +31,18 @@ const Index = () => {
       Spuntino: 0.1,
     };
 
+    // Se recipes è un oggetto, usa Object.values, altrimenti usa direttamente recipes
+    const recipesArray = Array.isArray(recipes) ? recipes : Object.values(recipes);
+
     const mealPlan = Object.entries(mealDistribution).map(([meal, percent]) => {
       const targetCalories = totalCalories * percent;
 
-      // Filtra ricette in modo più robusto, controllando mealTime o category
-      const mealRecipes = recipes.filter((r) => {
+      // Filtra ricette in base a mealTime o category
+      const mealRecipes = recipesArray.filter((r) => {
         if (r.mealTime) {
-          // se mealTime è stringa singola
           return r.mealTime.toLowerCase() === meal.toLowerCase();
-        } else if (r.category && Array.isArray(r.category)) {
-          // se category è array di stringhe
-          return r.category.some((cat) => cat.toLowerCase() === meal.toLowerCase());
+        } else if (r.mealTime && Array.isArray(r.mealTime)) {
+          return r.mealTime.some((cat) => cat.toLowerCase() === meal.toLowerCase());
         }
         return false;
       });
@@ -53,6 +56,7 @@ const Index = () => {
         if (accCalories >= targetCalories) break;
 
         const calories = recipe.calories || 0;
+        // Calcolo porzione per non superare le calorie target
         const portion = Math.min(1, (targetCalories - accCalories) / (calories || 1));
 
         accCalories += portion * calories;
@@ -142,12 +146,8 @@ const Index = () => {
                       <p>Altezza: {userProfile.altezza} cm, Peso: {userProfile.peso} kg</p>
                       <p>Attività: {userProfile.attivita}</p>
                     </div>
-                    <Button
-                      onClick={handleGenerateMealPlan}
-                      className="w-full"
-                      size="lg"
-                    >
-                      STO QUA Genera Piano Alimentare Personalizzato
+                    <Button onClick={handleGenerateMealPlan} className="w-full" size="lg">
+                      Genera Piano Alimentare Personalizzato
                     </Button>
                   </div>
                 ) : (
