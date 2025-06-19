@@ -147,7 +147,7 @@ const Index = () => {
                       className="w-full"
                       size="lg"
                     >
-                      Genera Piano Alimentare Personalizzato
+                      STO QUA Genera Piano Alimentare Personalizzato
                     </Button>
                   </div>
                 ) : (
