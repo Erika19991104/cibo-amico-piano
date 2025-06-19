@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +14,7 @@ interface MealPlanProps {
     altezza: number;
     eta: number;
     attivita: string;
+    obiettivo: string;  // aggiunto
   };
 }
 
@@ -31,18 +31,29 @@ export const MealPlan = ({ userProfile }: MealPlanProps) => {
 
   useEffect(() => {
     if (userProfile) {
-      // Calcoli nutrizionali
       const bmr = calculateBMR(userProfile.sesso, userProfile.peso, userProfile.altezza, userProfile.eta);
-      const tdee = calculateTDEE(bmr, userProfile.attivita);
-      const macrosTarget = calculateMacrosTarget(tdee);
-      const mealDistribution = distributeMeals(tdee);
-      
-      // Genera menù
+
+      // Modifica TDEE in base all’obiettivo
+      let tdeeBase = calculateTDEE(bmr, userProfile.attivita);
+      let tdeeAdjusted = tdeeBase;
+
+      if (userProfile.obiettivo === "dimagrimento") {
+        // taglia 15-20% calorie
+        tdeeAdjusted = tdeeBase * 0.8;
+      } else if (userProfile.obiettivo === "massa") {
+        // aumenta 10-15% calorie
+        tdeeAdjusted = tdeeBase * 1.15;
+      }
+      // per mantenimento si usa tdeeBase senza modifiche
+
+      const macrosTarget = calculateMacrosTarget(tdeeAdjusted);
+      const mealDistribution = distributeMeals(tdeeAdjusted);
+
       const menu = generateDailyMenu(foodDatabase, recipes, mealDistribution, macrosTarget);
-      
+
       setNutritionData({
         bmr: Math.round(bmr),
-        tdee: Math.round(tdee),
+        tdee: Math.round(tdeeAdjusted),
         macrosTarget,
         mealDistribution
       });
