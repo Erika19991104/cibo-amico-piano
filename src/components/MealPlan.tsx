@@ -30,26 +30,32 @@ export const MealPlan = ({ userProfile }: MealPlanProps) => {
 
   useEffect(() => {
     if (userProfile) {
+      // Calcoli nutrizionali
       const bmr = calculateBMR(userProfile.sesso, userProfile.peso, userProfile.altezza, userProfile.eta);
       const tdee = calculateTDEE(bmr, userProfile.attivita);
       const macrosTarget = calculateMacrosTarget(tdee);
       const mealDistribution = distributeMeals(tdee);
+      
+      // Genera menù
       const menu = generateDailyMenu(foodDatabase, recipes, mealDistribution, macrosTarget);
-
+      
       setNutritionData({
         bmr: Math.round(bmr),
         tdee: Math.round(tdee),
         macrosTarget,
-        mealDistribution,
+        mealDistribution
       });
       setMenuData(menu);
     }
   }, [userProfile]);
 
-  if (!nutritionData || !menuData) return <div>Caricamento piano alimentare...</div>;
+  if (!nutritionData || !menuData) {
+    return <div>Caricamento piano alimentare...</div>;
+  }
 
   return (
     <div className="space-y-6">
+      {/* Riepilogo nutrizionale */}
       <Card className="bg-gradient-to-r from-blue-50 to-purple-50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -72,7 +78,7 @@ export const MealPlan = ({ userProfile }: MealPlanProps) => {
               <div className="text-sm text-gray-600">Fabbisogno Totale</div>
             </div>
           </div>
-
+          
           <div className="mt-4 grid grid-cols-3 gap-4">
             <div className="text-center">
               <div className="text-lg font-semibold text-red-600">
@@ -96,24 +102,32 @@ export const MealPlan = ({ userProfile }: MealPlanProps) => {
         </CardContent>
       </Card>
 
+      {/* Pasti giornalieri */}
       <div className="space-y-4">
         <h2 className="text-2xl font-bold flex items-center gap-2">
           <UtensilsCrossed className="text-orange-600" />
           Piano Alimentare Giornaliero
         </h2>
-
+        
         {Object.entries(menuData).map(([mealName, mealData]) => (
           <Card key={mealName} className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                <span className="flex items-center gap-2">🍽️ {mealName}</span>
-                <Badge variant="outline">{Math.round(mealData.kcal_tot)} kcal</Badge>
+                <span className="flex items-center gap-2">
+                  🍽️ {mealName}
+                </span>
+                <Badge variant="outline">
+                  {Math.round(mealData.kcal_tot)} kcal
+                </Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
+              {/* Ricetta principale */}
               {mealData.ricetta && (
                 <div className="mb-4 p-3 bg-green-50 rounded-lg">
-                  <h4 className="font-semibold text-green-800 mb-2">🍳 Ricetta: {mealData.ricetta}</h4>
+                  <h4 className="font-semibold text-green-800 mb-2">
+                    🍳 Ricetta: {mealData.ricetta}
+                  </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                     {Object.entries(mealData.ingredienti_ricetta).map(([ingredient, quantity]) => (
                       <div key={ingredient} className="flex justify-between">
@@ -125,6 +139,7 @@ export const MealPlan = ({ userProfile }: MealPlanProps) => {
                 </div>
               )}
 
+              {/* Ingredienti extra */}
               {mealData.ingredienti_extra?.length > 0 && (
                 <div className="mb-4">
                   <h4 className="font-semibold mb-2">🥕 Ingredienti aggiuntivi:</h4>
@@ -139,19 +154,26 @@ export const MealPlan = ({ userProfile }: MealPlanProps) => {
                 </div>
               )}
 
+              {/* Macronutrienti del pasto */}
               <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                 <h4 className="font-semibold text-blue-800 mb-3">Macronutrienti</h4>
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <div className="text-red-600 font-bold">{Math.round(mealData.macro_tot.carboidrati)}g</div>
+                    <div className="text-red-600 font-bold">
+                      {Math.round(mealData.macro_tot.carboidrati)}g
+                    </div>
                     <div className="text-xs">Carboidrati</div>
                   </div>
                   <div>
-                    <div className="text-blue-600 font-bold">{Math.round(mealData.macro_tot.proteine)}g</div>
+                    <div className="text-blue-600 font-bold">
+                      {Math.round(mealData.macro_tot.proteine)}g
+                    </div>
                     <div className="text-xs">Proteine</div>
                   </div>
                   <div>
-                    <div className="text-yellow-600 font-bold">{Math.round(mealData.macro_tot.grassi)}g</div>
+                    <div className="text-yellow-600 font-bold">
+                      {Math.round(mealData.macro_tot.grassi)}g
+                    </div>
                     <div className="text-xs">Grassi</div>
                   </div>
                 </div>
