@@ -2,7 +2,6 @@ import { RecipeDatabase } from "@/types/nutrition";
 
 // Database delle ricette con ingredienti e quantità
 export const recipes: RecipeDatabase = {
- 
   "Mozzarella in carrozza light": {
     ingredienti: {
       "Pane integrale": "120",
@@ -11,16 +10,19 @@ export const recipes: RecipeDatabase = {
       "Latte": "15",
       "Pangrattato": "10",
       "Sale": "1",
-      "Pepe": "0.5"
-    }
+      "Pepe": "0.5",
+    },
+    mealTime: "Cena",
   },
   "Pasta al pomodoro": {
     ingredienti: {
       "Pasta di semola": "100",
       "Pomodori maturi": "200",
       "Olio extravergine oliva": "10",
-      "Parmigiano reggiano": "20"
-    }  },
+      "Parmigiano reggiano": "20",
+    },
+    mealTime: "Pranzo",
+  },
   "Parmigiana light": {
     ingredienti: {
       "Melanzane": "300",
@@ -29,8 +31,9 @@ export const recipes: RecipeDatabase = {
       "Basilico": "5",
       "Olio extravergine d'oliva": "5",
       "Sale": "1",
-      "Pepe": "0.5"
-    }
+      "Pepe": "0.5",
+    },
+    mealTime: "Cena",
   },
   "Scaloppina light": {
     ingredienti: {
@@ -39,8 +42,9 @@ export const recipes: RecipeDatabase = {
       "Vino bianco": "80",
       "Olio extravergine d'oliva": "13",
       "Sale": "1",
-      "Limone": "20"
-    }
+      "Limone": "20",
+    },
+    mealTime: "Cena",
   },
   "Riso alla cantonese light": {
     ingredienti: {
@@ -48,22 +52,25 @@ export const recipes: RecipeDatabase = {
       "Uova": "100",
       "Piselli": "100",
       "Prosciutto cotto magro": "80",
-      "Salsa di soia light": "15"
-    }
+      "Salsa di soia light": "15",
+    },
+    mealTime: "Pranzo",
   },
   "Riso al parmigiano light": {
     ingredienti: {
       "Riso": "150",
       "Parmigiano": "10",
       "Olio extravergine d'oliva": "5",
-      "Brodo vegetale": "200"
-    }
+      "Brodo vegetale": "200",
+    },
+    mealTime: "Pranzo",
   },
   "Tortellini in brodo": {
     ingredienti: {
       "Tortellini di carne": "160",
-      "Brodo vegetale o di carne sgrassato": "300"
-    }
+      "Brodo vegetale o di carne sgrassato": "300",
+    },
+    mealTime: "Pranzo",
   },
   "Insalata di riso light": {
     ingredienti: {
@@ -73,8 +80,9 @@ export const recipes: RecipeDatabase = {
       "Mais": "20",
       "Uovo sodo": "50",
       "Tonno al naturale": "80",
-      "Olio extravergine d'oliva": "5"
-    }
+      "Olio extravergine d'oliva": "5",
+    },
+    mealTime: "Pranzo",
   },
   "Pasta al pomodoro light": {
     ingredienti: {
@@ -82,8 +90,9 @@ export const recipes: RecipeDatabase = {
       "Passata di pomodoro": "200",
       "Aglio": "5",
       "Basilico": "5",
-      "Olio extravergine d'oliva": "5"
-    }
+      "Olio extravergine d'oliva": "5",
+    },
+    mealTime: "Pranzo",
   },
   "Spezzatino di vitello light": {
     ingredienti: {
@@ -92,8 +101,9 @@ export const recipes: RecipeDatabase = {
       "Sedano": "80",
       "Cipolla": "50",
       "Brodo vegetale": "200",
-      "Olio extravergine d'oliva": "10"
-    }
+      "Olio extravergine d'oliva": "10",
+    },
+    mealTime: "Cena",
   },
   "Calamari e piselli": {
     ingredienti: {
@@ -101,24 +111,27 @@ export const recipes: RecipeDatabase = {
       "Piselli": "200",
       "Cipolla": "50",
       "Passata di pomodoro": "150",
-      "Olio extravergine d'oliva": "10"
-    }
+      "Olio extravergine d'oliva": "10",
+    },
+    mealTime: "Cena",
   },
   "Insalata di mare": {
     ingredienti: {
       "Frutti di mare misti": "300",
       "Succo di limone": "20",
       "Prezzemolo": "5",
-      "Olio extravergine d'oliva": "15"
-    }
+      "Olio extravergine d'oliva": "15",
+    },
+    mealTime: "Cena",
   },
   "Seppie e piselli light": {
     ingredienti: {
       "Seppie": "300",
       "Piselli": "200",
       "Cipolla": "50",
-      "Olio extravergine d'oliva": "10"
-    }
+      "Olio extravergine d'oliva": "10",
+    },
+    mealTime: "Cena",
   },
   "Polpette light pollo": {
     ingredienti: {
@@ -127,8 +140,9 @@ export const recipes: RecipeDatabase = {
       "Pangrattato integrale": "30",
       "Prezzemolo": "5",
       "Spezie": "2",
-      "Sale": "1"
-    }
+      "Sale": "1",
+    },
+    mealTime: "Cena",
   },
   "Polpette light tonno": {
     ingredienti: {
@@ -137,25 +151,29 @@ export const recipes: RecipeDatabase = {
       "Pangrattato integrale": "30",
       "Prezzemolo": "5",
       "Spezie": "2",
-      "Sale": "1"
-    }
+      "Sale": "1",
+    },
+    mealTime: "Cena",
   },
   "Uova light sode": {
     ingredienti: {
-      "Uova": "60"
-    }
+      "Uova": "60",
+    },
+    mealTime: "Cena",
   },
   "Prosciutto crudo o cotto": {
     ingredienti: {
-      "Prosciutto crudo sgrassato o cotto magro": "60"
-    }
+      "Prosciutto crudo sgrassato o cotto magro": "60",
+    },
+    mealTime: "Pranzo",
   },
   "Ricotta light": {
     ingredienti: {
       "Ricotta light": "100",
       "Spezie ed erbe": "5",
-      "Scorza di limone": "3"
-    }
+      "Scorza di limone": "3",
+    },
+    mealTime: "Pranzo",
   },
   "Piadina con salsa yogurt e kebab di pollo": {
     ingredienti: {
@@ -165,16 +183,18 @@ export const recipes: RecipeDatabase = {
       "Succo di limone": "15",
       "Olio extravergine d'oliva": "5",
       "Insalata": "50",
-      "Pomodoro": "50"
-    }
+      "Pomodoro": "50",
+    },
+    mealTime: "Cena",
   },
   "Toast con pancarré, sottilette light e prosciutto cotto": {
     ingredienti: {
       "Pancarré integrale": "80",
       "Prosciutto cotto magro": "60",
       "Sottilette light": "40",
-      "Olio extravergine d'oliva": "5"
-    }
+      "Olio extravergine d'oliva": "5",
+    },
+    mealTime: "Cena",
   },
   "Pasta e fagioli light": {
     ingredienti: {
@@ -185,8 +205,9 @@ export const recipes: RecipeDatabase = {
       "Rosmarino": "1",
       "Sale": "1",
       "Pepe": "0.5",
-      "Olio extravergine d'oliva": "5"
-    }
+      "Olio extravergine d'oliva": "5",
+    },
+    mealTime: "Pranzo",
   },
   "Zuppa di lenticchie": {
     ingredienti: {
@@ -199,8 +220,9 @@ export const recipes: RecipeDatabase = {
       "Olio extravergine d'oliva": "10",
       "Sale": "1",
       "Pepe": "0.5",
-      "Rosmarino": "2"
-    }
+      "Rosmarino": "2",
+    },
+    mealTime: "Pranzo",
   },
   "Salmone al forno con verdure": {
     ingredienti: {
@@ -211,8 +233,9 @@ export const recipes: RecipeDatabase = {
       "Limone": "20",
       "Sale": "1",
       "Pepe": "0.5",
-      "Prezzemolo": "5"
-    }
+      "Prezzemolo": "5",
+    },
+    mealTime: "Cena",
   },
   "Pasta al pesto light": {
     ingredienti: {
@@ -223,8 +246,9 @@ export const recipes: RecipeDatabase = {
       "Olio extravergine d'oliva": "20",
       "Aglio": "5",
       "Sale": "1",
-      "Pepe": "0.5"
-    }
+      "Pepe": "0.5",
+    },
+    mealTime: "Pranzo",
   },
   "Pollo alla cacciatora light": {
     ingredienti: {
@@ -236,65 +260,70 @@ export const recipes: RecipeDatabase = {
       "Olio extravergine d'oliva": "10",
       "Sale": "1",
       "Pepe": "0.5",
-      "Rosmarino": "2"
-    }
-  }
-,
+      "Rosmarino": "2",
+    },
+    mealTime: "Cena",
+  },
   "Risotto ai funghi": {
     ingredienti: {
       "Riso brillato": "100",
       "Parmigiano reggiano": "30",
-      "Olio extravergine oliva": "15"
-    }
+      "Olio extravergine oliva": "15",
+    },
+    mealTime: "Pranzo",
   },
   "Pollo arrosto con verdure": {
     ingredienti: {
       "Petto di pollo": "150",
       "Carote": "100",
       "Broccoli": "150",
-      "Olio extravergine oliva": "15"
-    }
+      "Olio extravergine oliva": "15",
+    },
+    mealTime: "Cena",
   },
   "Salmone grigliato": {
     ingredienti: {
       "Salmone": "120",
       "Spinaci": "200",
-      "Olio extravergine oliva": "10"
-    }
+      "Olio extravergine oliva": "10",
+    },
+    mealTime: "Cena",
   },
   "Insalata proteica": {
     ingredienti: {
       "Tonno in scatola": "80",
       "Fagioli cannellini": "100",
       "Pomodori maturi": "150",
-      "Olio extravergine oliva": "15"
-    }
+      "Olio extravergine oliva": "15",
+    },
+    mealTime: "Cena/Pranzo",
   },
   "Omelette alle verdure": {
     ingredienti: {
       "Uovo intero": "120",
       "Spinaci": "100",
-      "Olio extravergine oliva": "10"
-    }
+      "Olio extravergine oliva": "10",
+    },
+    mealTime: "Cena",
   },
   "Quinoa con verdure": {
     ingredienti: {
       "Quinoa": "80",
       "Broccoli": "150",
       "Carote": "100",
-      "Olio extravergine oliva": "15"
-    }
+      "Olio extravergine oliva": "15",
+    },
+    mealTime: "Pranzo",
   },
-  
-
   "Porridge avena e banana": {
     ingredienti: {
       "Fiocchi d'avena": "50",
       "Latte scremato": "200",
       "Banana": "100",
       "Semi di chia": "10",
-      "Miele": "10"
-    }
+      "Miele": "10",
+    },
+    mealTime: "Colazione/Spuntino",
   },
   "Insalata di quinoa e ceci": {
     ingredienti: {
@@ -305,8 +334,9 @@ export const recipes: RecipeDatabase = {
       "Prezzemolo": "5",
       "Olio extravergine oliva": "10",
       "Limone": "10",
-      "Sale": "1"
-    }
+      "Sale": "1",
+    },
+    mealTime: "Cena/Pranzo",
   },
   "Filetto di trota al forno": {
     ingredienti: {
@@ -316,8 +346,9 @@ export const recipes: RecipeDatabase = {
       "Limone": "15",
       "Sale": "1",
       "Pepe": "0.5",
-      "Prezzemolo": "5"
-    }
+      "Prezzemolo": "5",
+    },
+    mealTime: "Cena",
   },
   "Polpette di lenticchie": {
     ingredienti: {
@@ -328,8 +359,9 @@ export const recipes: RecipeDatabase = {
       "Sale": "1",
       "Pepe": "0.5",
       "Yogurt greco magro": "100",
-      "Succo di limone": "10"
-    }
+      "Succo di limone": "10",
+    },
+    mealTime: "Cena",
   },
   "Frittata al forno con zucchine": {
     ingredienti: {
@@ -338,8 +370,9 @@ export const recipes: RecipeDatabase = {
       "Parmigiano": "10",
       "Olio extravergine oliva": "5",
       "Sale": "1",
-      "Pepe": "0.5"
-    }
+      "Pepe": "0.5",
+    },
+    mealTime: "Cena",
   },
   "Insalata di farro e tonno": {
     ingredienti: {
@@ -349,8 +382,9 @@ export const recipes: RecipeDatabase = {
       "Olive nere": "20",
       "Olio extravergine oliva": "10",
       "Prezzemolo": "5",
-      "Sale": "1"
-    }
+      "Sale": "1",
+    },
+    mealTime: "Pranzo",
   },
   "Crema di carote e zenzero": {
     ingredienti: {
@@ -359,8 +393,9 @@ export const recipes: RecipeDatabase = {
       "Brodo vegetale": "250",
       "Olio extravergine oliva": "5",
       "Sale": "1",
-      "Pepe": "0.5"
-    }
+      "Pepe": "0.5",
+    },
+    mealTime: "Pranzo",
   },
   "Burger di fagioli": {
     ingredienti: {
@@ -370,8 +405,9 @@ export const recipes: RecipeDatabase = {
       "Prezzemolo": "5",
       "Cipolla": "30",
       "Olio extravergine oliva": "5",
-      "Sale": "1"
-    }
+      "Sale": "1",
+    },
+    mealTime: "Cena",
   },
   "Pasta integrale con zucchine e ricotta": {
     ingredienti: {
@@ -380,8 +416,9 @@ export const recipes: RecipeDatabase = {
       "Ricotta light": "50",
       "Olio extravergine oliva": "5",
       "Sale": "1",
-      "Pepe": "0.5"
-    }
+      "Pepe": "0.5",
+    },
+    mealTime: "Pranzo",
   },
   "Cous cous con pollo e verdure": {
     ingredienti: {
@@ -391,8 +428,9 @@ export const recipes: RecipeDatabase = {
       "Zucchine": "100",
       "Olio extravergine oliva": "10",
       "Curry": "1",
-      "Sale": "1"
-    }
+      "Sale": "1",
+    },
+    mealTime: "Pranzo",
   },
   "Merluzzo in umido con patate": {
     ingredienti: {
@@ -402,18 +440,18 @@ export const recipes: RecipeDatabase = {
       "Cipolla": "30",
       "Olio extravergine oliva": "10",
       "Sale": "1",
-      "Prezzemolo": "5"
-    }
+      "Prezzemolo": "5",
+    },
+    mealTime: "Cena",
   },
   "Toast integrale con hummus e avocado": {
     ingredienti: {
       "Pane integrale": "80",
       "Hummus": "50",
-      "Avocado": "50",
-      "Semi di sesamo": "5",
       "Limone": "5",
-      "Sale": "1"
-    }
+      "Sale": "1",
+    },
+    mealTime: "Spuntino",
   },
   "Riso integrale con lenticchie e spinaci": {
     ingredienti: {
@@ -422,17 +460,24 @@ export const recipes: RecipeDatabase = {
       "Spinaci": "100",
       "Olio extravergine oliva": "5",
       "Aglio": "5",
-      "Sale": "1"
-    }
+      "Sale": "1",
+    },
+    mealTime: "Pranzo",
   },
-  "Pancake proteici light": {
+  "Latte, caffè e biscotti": {
     ingredienti: {
-      "Albume d'uovo": "100",
-      "Farina d'avena": "40",
-      "Banana": "50",
-      "Cannella": "1",
-      "Miele": "10",
-      "Yogurt greco magro": "100"
-    }
+      "Latte parzialmente scremato": "200",
+      "Biscotti": "40"
+      
+    },
+    mealTime: "Colazione",
+  }, 
+  "Crackers": {
+    ingredienti: {
+      "Crackers": "40"
+      
+    },
+    mealTime: "Spuntino",
   }
-}
+  
+};
