@@ -14,6 +14,7 @@ const Index = () => {
   const [mealPlan, setMealPlan] = useState(null);
 
   const handleGenerateMealPlan = () => {
+    console.log("Funzione handleGenerateMealPlan chiamata");
     if (!userProfile) return;
 
     const totalCalories = userProfile.calorieTarget || 2000;
