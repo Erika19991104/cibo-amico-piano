@@ -6,6 +6,7 @@ import { ProfileForm } from "@/components/ProfileForm";
 import { FoodSearch } from "@/components/FoodSearch";
 import { MealPlan } from "@/components/MealPlan";
 import { User, Calculator, Search, UtensilsCrossed } from "lucide-react";
+import { generaPiano } from "@/utils/generaPiano";
 
 import { generateMealPlan } from "@/utils/recipeHelpers";
 
