@@ -29,14 +29,19 @@ const Index = () => {
     const mealPlan = Object.entries(mealDistribution).map(([meal, percent]) => {
       const targetCalories = totalCalories * percent;
 
-      // Filtra ricette che contengono la categoria (case insensitive)
-      const mealRecipes = recipes.filter(
-        (r) =>
-          r.category &&
-          r.category.some((cat: string) =>
-            cat.toLowerCase().includes(meal.toLowerCase())
-          )
-      );
+      // Filtra ricette in modo più robusto, controllando mealTime o category
+      const mealRecipes = recipes.filter((r) => {
+        if (r.mealTime) {
+          // se mealTime è stringa singola
+          return r.mealTime.toLowerCase() === meal.toLowerCase();
+        } else if (r.category && Array.isArray(r.category)) {
+          // se category è array di stringhe
+          return r.category.some((cat) => cat.toLowerCase() === meal.toLowerCase());
+        }
+        return false;
+      });
+
+      console.log(`Ricette per ${meal}:`, mealRecipes);
 
       let accCalories = 0;
       const selectedRecipes = [];
@@ -45,7 +50,6 @@ const Index = () => {
         if (accCalories >= targetCalories) break;
 
         const calories = recipe.calories || 0;
-        // Porzione in percentuale (massimo 1)
         const portion = Math.min(1, (targetCalories - accCalories) / (calories || 1));
 
         accCalories += portion * calories;
@@ -135,8 +139,8 @@ const Index = () => {
                       <p>Altezza: {userProfile.altezza} cm, Peso: {userProfile.peso} kg</p>
                       <p>Attività: {userProfile.attivita}</p>
                     </div>
-                    <Button 
-                      onClick={handleGenerateMealPlan} 
+                    <Button
+                      onClick={handleGenerateMealPlan}
                       className="w-full"
                       size="lg"
                     >
