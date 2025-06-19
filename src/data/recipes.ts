@@ -10,6 +10,237 @@ export const recipes: RecipeDatabase = {
       "Parmigiano reggiano": "20"
     }
   },
+  export const recipes: RecipeDatabase = {
+  "Mozzarella in carrozza light": {
+    ingredienti: {
+      "Pane integrale": "120",
+      "Mozzarella light": "100",
+      "Uovo": "50",
+      "Latte": "15",
+      "Pangrattato": "10",
+      "Sale": "1",
+      "Pepe": "0.5"
+    }
+  },
+  "Parmigiana light": {
+    ingredienti: {
+      "Melanzane": "300",
+      "Passata di pomodoro": "200",
+      "Mozzarella light": "100",
+      "Basilico": "5",
+      "Olio extravergine d'oliva": "5",
+      "Sale": "1",
+      "Pepe": "0.5"
+    }
+  },
+  "Scaloppina light": {
+    ingredienti: {
+      "Fettine di pollo o vitello": "250",
+      "Farina": "10",
+      "Vino bianco": "80",
+      "Olio extravergine d'oliva": "13",
+      "Sale": "1",
+      "Limone": "20"
+    }
+  },
+  "Riso alla cantonese light": {
+    ingredienti: {
+      "Riso basmati": "150",
+      "Uova": "100",
+      "Piselli": "100",
+      "Prosciutto cotto magro": "80",
+      "Salsa di soia light": "15"
+    }
+  },
+  "Riso al parmigiano light": {
+    ingredienti: {
+      "Riso": "150",
+      "Parmigiano": "10",
+      "Olio extravergine d'oliva": "5",
+      "Brodo vegetale": "200"
+    }
+  },
+  "Tortellini in brodo": {
+    ingredienti: {
+      "Tortellini di carne": "160",
+      "Brodo vegetale o di carne sgrassato": "300"
+    }
+  },
+  "Insalata di riso light": {
+    ingredienti: {
+      "Riso": "150",
+      "Zucchina": "100",
+      "Carota": "100",
+      "Mais": "20",
+      "Uovo sodo": "50",
+      "Tonno al naturale": "80",
+      "Olio extravergine d'oliva": "5"
+    }
+  },
+  "Pasta al pomodoro light": {
+    ingredienti: {
+      "Pasta integrale": "160",
+      "Passata di pomodoro": "200",
+      "Aglio": "5",
+      "Basilico": "5",
+      "Olio extravergine d'oliva": "5"
+    }
+  },
+  "Spezzatino di vitello light": {
+    ingredienti: {
+      "Vitello a bocconcini": "300",
+      "Carota": "100",
+      "Sedano": "80",
+      "Cipolla": "50",
+      "Brodo vegetale": "200",
+      "Olio extravergine d'oliva": "10"
+    }
+  },
+  "Calamari e piselli": {
+    ingredienti: {
+      "Calamari puliti": "300",
+      "Piselli": "200",
+      "Cipolla": "50",
+      "Passata di pomodoro": "150",
+      "Olio extravergine d'oliva": "10"
+    }
+  },
+  "Insalata di mare": {
+    ingredienti: {
+      "Frutti di mare misti": "300",
+      "Succo di limone": "20",
+      "Prezzemolo": "5",
+      "Olio extravergine d'oliva": "15"
+    }
+  },
+  "Seppie e piselli light": {
+    ingredienti: {
+      "Seppie": "300",
+      "Piselli": "200",
+      "Cipolla": "50",
+      "Olio extravergine d'oliva": "10"
+    }
+  },
+  "Polpette light pollo": {
+    ingredienti: {
+      "pollo tritato": "200",
+      "Uovo": "50",
+      "Pangrattato integrale": "30",
+      "Prezzemolo": "5",
+      "Spezie": "2",
+      "Sale": "1"
+    }
+  },
+  "Polpette light tonno": {
+    ingredienti: {
+      "tonno tritato": "200",
+      "Uovo": "50",
+      "Pangrattato integrale": "30",
+      "Prezzemolo": "5",
+      "Spezie": "2",
+      "Sale": "1"
+    }
+  },
+  "Uova light sode": {
+    ingredienti: {
+      "Uova": "60"
+    }
+  },
+  "Prosciutto crudo o cotto": {
+    ingredienti: {
+      "Prosciutto crudo sgrassato o cotto magro": "60"
+    }
+  },
+  "Ricotta light": {
+    ingredienti: {
+      "Ricotta light": "100",
+      "Spezie ed erbe": "5",
+      "Scorza di limone": "3"
+    }
+  },
+  "Piadina con salsa yogurt e kebab di pollo": {
+    ingredienti: {
+      "Piadina integrale": "100",
+      "Kebab di pollo AIA": "150",
+      "Yogurt greco magro": "100",
+      "Succo di limone": "15",
+      "Olio extravergine d'oliva": "5",
+      "Insalata": "50",
+      "Pomodoro": "50"
+    }
+  },
+  "Toast con pancarré, sottilette light e prosciutto cotto": {
+    ingredienti: {
+      "Pancarré integrale": "80",
+      "Prosciutto cotto magro": "60",
+      "Sottilette light": "40",
+      "Olio extravergine d'oliva": "5"
+    }
+  },
+  "Pasta e fagioli light": {
+    ingredienti: {
+      "Pasta integrale corta": "40",
+      "Fagioli cannellini lessati": "100",
+      "Aglio": "1",
+      "Passata di pomodoro": "200",
+      "Rosmarino": "1",
+      "Sale": "1",
+      "Pepe": "0.5",
+      "Olio extravergine d'oliva": "5"
+    }
+  },
+  "Zuppa di lenticchie": {
+    ingredienti: {
+      "Lenticchie": "200",
+      "Carota": "80",
+      "Sedano": "50",
+      "Cipolla": "50",
+      "Passata di pomodoro": "150",
+      "Brodo vegetale": "500",
+      "Olio extravergine d'oliva": "10",
+      "Sale": "1",
+      "Pepe": "0.5",
+      "Rosmarino": "2"
+    }
+  },
+  "Salmone al forno con verdure": {
+    ingredienti: {
+      "Filetto di salmone": "200",
+      "Zucchine": "150",
+      "Peperoni": "100",
+      "Olio extravergine d'oliva": "10",
+      "Limone": "20",
+      "Sale": "1",
+      "Pepe": "0.5",
+      "Prezzemolo": "5"
+    }
+  },
+  "Pasta al pesto light": {
+    ingredienti: {
+      "Pasta integrale": "160",
+      "Basilico fresco": "30",
+      "Pinoli": "15",
+      "Parmigiano": "20",
+      "Olio extravergine d'oliva": "20",
+      "Aglio": "5",
+      "Sale": "1",
+      "Pepe": "0.5"
+    }
+  },
+  "Pollo alla cacciatora light": {
+    ingredienti: {
+      "Cosce di pollo senza pelle": "300",
+      "Passata di pomodoro": "200",
+      "Cipolla": "50",
+      "Peperoni": "100",
+      "Olive nere denocciolate": "50",
+      "Olio extravergine d'oliva": "10",
+      "Sale": "1",
+      "Pepe": "0.5",
+      "Rosmarino": "2"
+    }
+  }
+},
   "Risotto ai funghi": {
     ingredienti: {
       "Riso brillato": "100",
