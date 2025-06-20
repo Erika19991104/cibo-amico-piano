@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,8 +62,8 @@ export const ProfileForm = ({ onProfileSave }: ProfileFormProps) => {
                 <SelectValue placeholder="Seleziona sesso" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Donna">Donna</SelectItem>
-                <SelectItem value="Uomo">Uomo</SelectItem>
+                <SelectItem value="F">Donna</SelectItem>
+                <SelectItem value="M">Uomo</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -110,25 +111,25 @@ export const ProfileForm = ({ onProfileSave }: ProfileFormProps) => {
                 <SelectValue placeholder="Seleziona livello attività" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Sedentario">Sedentario</SelectItem>
-                <SelectItem value="Leggero">Leggero</SelectItem>
-                <SelectItem value="Moderato">Moderato</SelectItem>
-                <SelectItem value="Intenso">Intenso</SelectItem>
-                <SelectItem value="Molto intenso">Molto intenso</SelectItem>
+                <SelectItem value="Sedentario">Sedentario (poco/nessun esercizio)</SelectItem>
+                <SelectItem value="Leggero">Leggero (esercizio leggero 1-3 giorni/settimana)</SelectItem>
+                <SelectItem value="Moderato">Moderato (esercizio moderato 3-5 giorni/settimana)</SelectItem>
+                <SelectItem value="Intenso">Intenso (esercizio intenso 6-7 giorni/settimana)</SelectItem>
+                <SelectItem value="Molto intenso">Molto intenso (esercizio molto intenso, lavoro fisico)</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <Label htmlFor="obiettivo">Obiettivo *</Label>
+            <Label htmlFor="obiettivo">Obiettivo nutrizionale *</Label>
             <Select value={formData.obiettivo} onValueChange={(value) => setFormData(prev => ({...prev, obiettivo: value}))}>
               <SelectTrigger>
                 <SelectValue placeholder="Seleziona obiettivo" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Dimagrimento">Dimagrimento</SelectItem>
-                <SelectItem value="Mantenimento">Mantenimento</SelectItem>
-                <SelectItem value="Aumento Massa">Aumento Massa</SelectItem>
+                <SelectItem value="Dimagrimento">Dimagrimento (-15% calorie)</SelectItem>
+                <SelectItem value="Mantenimento">Mantenimento peso</SelectItem>
+                <SelectItem value="Aumento Massa">Aumento massa (+15% calorie)</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -136,7 +137,7 @@ export const ProfileForm = ({ onProfileSave }: ProfileFormProps) => {
           <div>
             <Label>Preferenze/Esclusioni alimentari</Label>
             <div className="space-y-2 mt-2">
-              {["Vegetariano", "Vegano", "Senza glutine", "Senza lattosio", "No carne rossa"].map((opzione) => (
+              {["Vegetariano", "Vegano", "Senza glutine", "Senza lattosio", "No carne rossa", "No pesce"].map((opzione) => (
                 <div key={opzione} className="flex items-center space-x-2">
                   <Checkbox
                     id={opzione}

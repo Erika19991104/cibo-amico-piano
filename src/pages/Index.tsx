@@ -4,12 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileForm } from "@/components/ProfileForm";
 import { FoodSearch } from "@/components/FoodSearch";
-import MealPlan from "@/components/MealPlan";
-import { User, Calculator, Search, UtensilsCrossed } from "lucide-react";
-import { generaPianoAvanzato, calculateBMR, calculateTDEE, calculateMacrosTarget } from "@/utils/nutritionUtils";
-import { foodDatabase } from "@/data/foodDatabase";
-
-const foodArray = Object.values(foodDatabase);
+import WeeklyPlanView from "@/components/WeeklyPlanView";
+import { User, Calculator, Search, UtensilsCrossed, Calendar } from "lucide-react";
+import { calcolaTargetNutrizionale, generaPianoTreSettimane, WeeklyPlan } from "@/utils/mealPlanGenerator";
 
 interface UserProfile {
   sesso: "M" | "F";
@@ -17,84 +14,40 @@ interface UserProfile {
   altezza: number;
   eta: number;
   attivita: string;
+  obiettivo: string;
+  dieta: string[];
 }
-
-type RecipePortion = {
-  recipe: {
-    id: string;
-    name: string;
-    Energia: number;
-    proteine: number;
-    carboidrati: number;
-    grassi: number;
-    ingredienti?: object;
-  };
-  portion: number;
-};
-
-type Meal = {
-  categoria: string;
-  ricette: RecipePortion[];
-};
 
 const Index = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [mealPlan, setMealPlan] = useState<Meal[] | null>(null);
-  const [summary, setSummary] = useState<{
-    bmr: number;
-    tdee: number;
-    targetMacros: { carboidrati: number; proteine: number; grassi: number };
-  } | null>(null);
+  const [pianoSettimanale, setPianoSettimanale] = useState<WeeklyPlan[] | null>(null);
+  const [targetNutrizionale, setTargetNutrizionale] = useState<any>(null);
 
-  const handleGenerateMealPlan = () => {
+  const handleGenerateWeeklyPlan = () => {
     if (!userProfile) {
       console.log("Nessun profilo utente presente");
       return;
     }
 
-    const bmr = calculateBMR(userProfile.sesso, userProfile.peso, userProfile.altezza, userProfile.eta);
-    const tdee = calculateTDEE(bmr, userProfile.attivita);
-    const macros = calculateMacrosTarget(tdee);
+    console.log("Generazione piano nutrizionale per:", userProfile);
 
-    setSummary({ bmr: Math.round(bmr), tdee: Math.round(tdee), targetMacros: macros });
+    // Calcola il target nutrizionale secondo le linee guida CREA
+    const target = calcolaTargetNutrizionale(
+      userProfile.sesso,
+      userProfile.eta,
+      userProfile.peso,
+      userProfile.altezza,
+      userProfile.attivita,
+      userProfile.obiettivo
+    );
 
-    const rawPlan = generaPianoAvanzato(macros, foodArray);
+    console.log("Target nutrizionale calcolato:", target);
+    setTargetNutrizionale(target);
 
-    const colazioneFoods = rawPlan.slice(0, 3);
-    const pranzoFoods = rawPlan.slice(3, 6);
-    const cenaFoods = rawPlan.slice(6, 9);
-
-    function foodToRecipePortion(food: typeof rawPlan[0]): RecipePortion {
-      return {
-        recipe: {
-          id: String(food.indice ?? "0"),
-          name: food.descrizione ?? "Sconosciuto",
-          Energia: food.Energia ?? 0,
-          proteine: food.Proteine ?? 0,
-          carboidrati: food.Carboidrati_totali ?? 0,
-          grassi: food.Lipidi_totali ?? 0,
-          ingredienti: {},
-        },
-        portion: 1,
-      };
-    }
-
-    const mealPlanFormatted: Meal[] = [
-      {
-        categoria: "Colazione",
-        ricette: colazioneFoods.map(foodToRecipePortion),
-      },
-      {
-        categoria: "Pranzo",
-        ricette: pranzoFoods.map(foodToRecipePortion),
-      },
-      {
-        categoria: "Cena",
-        ricette: cenaFoods.map(foodToRecipePortion),
-      },
-    ];
-
-    setMealPlan(mealPlanFormatted);
+    // Genera il piano di 3 settimane
+    const piano = generaPianoTreSettimane(target);
+    console.log("Piano di 3 settimane generato:", piano);
+    setPianoSettimanale(piano);
   };
 
   return (
@@ -105,11 +58,12 @@ const Index = () => {
             🥗 Bilanciamo
             <UtensilsCrossed className="text-green-600" />
           </h1>
-          <p className="text-xl text-gray-600">Generatore Piano Alimentare Personalizzato</p>
+          <p className="text-xl text-gray-600">Piano Nutrizionale Personalizzato - 3 Settimane</p>
+          <p className="text-sm text-gray-500 mt-2">Basato sulle Linee Guida CREA per una sana alimentazione</p>
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User size={16} />
               Profilo
@@ -120,11 +74,15 @@ const Index = () => {
             </TabsTrigger>
             <TabsTrigger value="calculate" className="flex items-center gap-2">
               <Calculator size={16} />
-              Calcola Piano
+              Calcola Fabbisogno
+            </TabsTrigger>
+            <TabsTrigger value="generate" className="flex items-center gap-2">
+              <Calendar size={16} />
+              Genera Piano
             </TabsTrigger>
             <TabsTrigger value="plan" className="flex items-center gap-2">
               <UtensilsCrossed size={16} />
-              Piano Alimentare
+              Piano 3 Settimane
             </TabsTrigger>
           </TabsList>
 
@@ -133,7 +91,7 @@ const Index = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="text-blue-600" />
-                  Profilo Utente e Obiettivi
+                  Profilo Utente e Obiettivi Nutrizionali
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -161,7 +119,7 @@ const Index = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calculator className="text-purple-600" />
-                  Genera Piano Alimentare
+                  Calcolo Fabbisogno Nutrizionale
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -169,12 +127,86 @@ const Index = () => {
                   <div className="space-y-4">
                     <div className="bg-blue-50 p-4 rounded-lg">
                       <h3 className="font-semibold mb-2">Profilo Attuale:</h3>
-                      <p>Sesso: {userProfile.sesso}, Età: {userProfile.eta} anni</p>
-                      <p>Altezza: {userProfile.altezza} cm, Peso: {userProfile.peso} kg</p>
-                      <p>Attività: {userProfile.attivita}</p>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <p><span className="font-medium">Sesso:</span> {userProfile.sesso === "M" ? "Uomo" : "Donna"}</p>
+                        <p><span className="font-medium">Età:</span> {userProfile.eta} anni</p>
+                        <p><span className="font-medium">Altezza:</span> {userProfile.altezza} cm</p>
+                        <p><span className="font-medium">Peso:</span> {userProfile.peso} kg</p>
+                        <p><span className="font-medium">Attività:</span> {userProfile.attivita}</p>
+                        <p><span className="font-medium">Obiettivo:</span> {userProfile.obiettivo}</p>
+                      </div>
+                      {userProfile.dieta.length > 0 && (
+                        <div className="mt-2">
+                          <p className="font-medium text-sm">Preferenze alimentari:</p>
+                          <p className="text-sm text-gray-600">{userProfile.dieta.join(", ")}</p>
+                        </div>
+                      )}
                     </div>
-                    <Button onClick={handleGenerateMealPlan} className="w-full" size="lg">
-                      Genera Piano Alimentare Personalizzato
+                    
+                    {targetNutrizionale && (
+                      <div className="bg-green-50 p-4 rounded-lg">
+                        <h3 className="font-semibold mb-2">Fabbisogno Nutrizionale Calcolato:</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div className="text-center">
+                            <p className="text-sm text-gray-600">Calorie/giorno</p>
+                            <p className="text-xl font-bold text-blue-600">{targetNutrizionale.kcal_giornaliere}</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-sm text-gray-600">Carboidrati</p>
+                            <p className="text-xl font-bold text-green-600">{targetNutrizionale.carboidrati_g}g</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-sm text-gray-600">Proteine</p>
+                            <p className="text-xl font-bold text-orange-600">{targetNutrizionale.proteine_g}g</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-sm text-gray-600">Grassi</p>
+                            <p className="text-xl font-bold text-yellow-600">{targetNutrizionale.grassi_g}g</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <User size={48} className="mx-auto mb-4 opacity-50" />
+                    <p>Completa prima il tuo profilo nella sezione "Profilo"</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="generate">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="text-indigo-600" />
+                  Genera Piano Nutrizionale 3 Settimane
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {userProfile ? (
+                  <div className="space-y-4">
+                    <div className="bg-indigo-50 p-4 rounded-lg">
+                      <h3 className="font-semibold mb-2">Caratteristiche del Piano:</h3>
+                      <ul className="text-sm space-y-1 text-gray-700">
+                        <li>• 21 giorni di piani alimentari personalizzati</li>
+                        <li>• Distribuzione calorica secondo linee guida CREA</li>
+                        <li>• Varietà giornaliera e stagionalità degli alimenti</li>
+                        <li>• Bilanciamento nutrizionale ottimale</li>
+                        <li>• Ricette modulari e combinazioni sensate</li>
+                      </ul>
+                    </div>
+                    
+                    <Button 
+                      onClick={handleGenerateWeeklyPlan} 
+                      className="w-full" 
+                      size="lg"
+                      disabled={!userProfile}
+                    >
+                      <Calendar className="mr-2" size={16} />
+                      Genera Piano di 3 Settimane
                     </Button>
                   </div>
                 ) : (
@@ -192,43 +224,19 @@ const Index = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <UtensilsCrossed className="text-orange-600" />
-                  Il Tuo Piano Alimentare
+                  Il Tuo Piano Nutrizionale - 3 Settimane
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {mealPlan && summary ? (
-                  <div className="space-y-6">
-                    <div>
-                      <h2 className="text-xl font-semibold mb-2">Fabbisogno Giornaliero</h2>
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
-                        <div className="p-2 bg-gray-50 rounded text-center">
-                          <p className="text-sm text-gray-500">BMR (kcal)</p>
-                          <p className="text-lg font-medium">{summary.bmr}</p>
-                        </div>
-                        <div className="p-2 bg-gray-50 rounded text-center">
-                          <p className="text-sm text-gray-500">TDEE (kcal)</p>
-                          <p className="text-lg font-medium">{summary.tdee}</p>
-                        </div>
-                        <div className="p-2 bg-gray-50 rounded text-center">
-                          <p className="text-sm text-gray-500">Carboidrati (g)</p>
-                          <p className="text-lg font-medium">{Math.round(summary.targetMacros.carboidrati)}</p>
-                        </div>
-                        <div className="p-2 bg-gray-50 rounded text-center">
-                          <p className="text-sm text-gray-500">Proteine (g)</p>
-                          <p className="text-lg font-medium">{Math.round(summary.targetMacros.proteine)}</p>
-                        </div>
-                        <div className="p-2 bg-gray-50 rounded text-center">
-                          <p className="text-sm text-gray-500">Grassi (g)</p>
-                          <p className="text-lg font-medium">{Math.round(summary.targetMacros.grassi)}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <MealPlan mealPlan={mealPlan} />
-                  </div>
+                {pianoSettimanale && targetNutrizionale ? (
+                  <WeeklyPlanView 
+                    piano={pianoSettimanale} 
+                    targetNutrizionale={targetNutrizionale}
+                  />
                 ) : (
                   <div className="text-center py-8 text-gray-500">
-                    <Calculator size={48} className="mx-auto mb-4 opacity-50" />
-                    <p>Genera prima il tuo piano alimentare nella sezione "Calcola Piano"</p>
+                    <Calendar size={48} className="mx-auto mb-4 opacity-50" />
+                    <p>Genera prima il tuo piano nutrizionale nella sezione "Genera Piano"</p>
                   </div>
                 )}
               </CardContent>
