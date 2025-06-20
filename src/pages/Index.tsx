@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,7 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileForm } from "@/components/ProfileForm";
 import { FoodSearch } from "@/components/FoodSearch";
 import WeeklyPlanView from "@/components/WeeklyPlanView";
-import { User, Calculator, Search, UtensilsCrossed, Calendar } from "lucide-react";
+import { DetailedMealPlan } from "@/components/DetailedMealPlan";
+import { User, Calculator, Search, UtensilsCrossed, Calendar, FileText } from "lucide-react";
 import { calcolaTargetNutrizionale, generaPianoTreSettimane, WeeklyPlan } from "@/utils/mealPlanGenerator";
 
 interface UserProfile {
@@ -31,7 +33,6 @@ const Index = () => {
 
     console.log("Generazione piano nutrizionale per:", userProfile);
 
-    // Calcola il target nutrizionale secondo le linee guida CREA
     const target = calcolaTargetNutrizionale(
       userProfile.sesso,
       userProfile.eta,
@@ -44,7 +45,6 @@ const Index = () => {
     console.log("Target nutrizionale calcolato:", target);
     setTargetNutrizionale(target);
 
-    // Genera il piano di 3 settimane
     const piano = generaPianoTreSettimane(target);
     console.log("Piano di 3 settimane generato:", piano);
     setPianoSettimanale(piano);
@@ -63,7 +63,7 @@ const Index = () => {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User size={16} />
               Profilo
@@ -82,7 +82,11 @@ const Index = () => {
             </TabsTrigger>
             <TabsTrigger value="plan" className="flex items-center gap-2">
               <UtensilsCrossed size={16} />
-              Piano 3 Settimane
+              Piano Riepilogo
+            </TabsTrigger>
+            <TabsTrigger value="detailed" className="flex items-center gap-2">
+              <FileText size={16} />
+              Piano Dettagliato
             </TabsTrigger>
           </TabsList>
 
@@ -224,7 +228,7 @@ const Index = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <UtensilsCrossed className="text-orange-600" />
-                  Il Tuo Piano Nutrizionale - 3 Settimane
+                  Piano Nutrizionale Riepilogo - 3 Settimane
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -236,6 +240,30 @@ const Index = () => {
                 ) : (
                   <div className="text-center py-8 text-gray-500">
                     <Calendar size={48} className="mx-auto mb-4 opacity-50" />
+                    <p>Genera prima il tuo piano nutrizionale nella sezione "Genera Piano"</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="detailed">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="text-purple-600" />
+                  Piano Nutrizionale Dettagliato - Formato Tabellare
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {pianoSettimanale && targetNutrizionale ? (
+                  <DetailedMealPlan 
+                    piano={pianoSettimanale} 
+                    targetNutrizionale={targetNutrizionale}
+                  />
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <FileText size={48} className="mx-auto mb-4 opacity-50" />
                     <p>Genera prima il tuo piano nutrizionale nella sezione "Genera Piano"</p>
                   </div>
                 )}
