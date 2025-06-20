@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +8,8 @@ import WeeklyPlanView from "@/components/WeeklyPlanView";
 import { DetailedMealPlan } from "@/components/DetailedMealPlan";
 import { User, Calculator, Search, UtensilsCrossed, Calendar, FileText } from "lucide-react";
 import { calcolaTargetNutrizionale, generaPianoTreSettimane, WeeklyPlan } from "@/utils/mealPlanGenerator";
+import { generaCREAPiano3Settimane, CREAMealPlan } from "@/utils/creaMealPlanGenerator";
+import { CREAMealPlanTable } from "@/components/CREAMealPlanTable";
 
 interface UserProfile {
   sesso: "M" | "F";
@@ -23,6 +24,7 @@ interface UserProfile {
 const Index = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [pianoSettimanale, setPianoSettimanale] = useState<WeeklyPlan[] | null>(null);
+  const [pianoCREA, setPianoCREA] = useState<CREAMealPlan[] | null>(null);
   const [targetNutrizionale, setTargetNutrizionale] = useState<any>(null);
 
   const handleGenerateWeeklyPlan = () => {
@@ -31,7 +33,7 @@ const Index = () => {
       return;
     }
 
-    console.log("Generazione piano nutrizionale per:", userProfile);
+    console.log("Generazione piano nutrizionale CREA per:", userProfile);
 
     const target = calcolaTargetNutrizionale(
       userProfile.sesso,
@@ -45,9 +47,20 @@ const Index = () => {
     console.log("Target nutrizionale calcolato:", target);
     setTargetNutrizionale(target);
 
+    // Genera piano standard (manteniamo per compatibilità)
     const piano = generaPianoTreSettimane(target);
     console.log("Piano di 3 settimane generato:", piano);
     setPianoSettimanale(piano);
+
+    // Genera nuovo piano CREA
+    const pianoCREACompleto = generaCREAPiano3Settimane(
+      target.kcal_giornaliere,
+      target.proteine_g,
+      target.carboidrati_g,
+      target.grassi_g
+    );
+    console.log("Piano CREA di 3 settimane generato:", pianoCREACompleto);
+    setPianoCREA(pianoCREACompleto);
   };
 
   return (
@@ -63,7 +76,7 @@ const Index = () => {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User size={16} />
               Profilo
@@ -87,6 +100,10 @@ const Index = () => {
             <TabsTrigger value="detailed" className="flex items-center gap-2">
               <FileText size={16} />
               Piano Dettagliato
+            </TabsTrigger>
+            <TabsTrigger value="crea" className="flex items-center gap-2">
+              <FileText size={16} />
+              Piano CREA
             </TabsTrigger>
           </TabsList>
 
@@ -259,6 +276,30 @@ const Index = () => {
                 {pianoSettimanale && targetNutrizionale ? (
                   <DetailedMealPlan 
                     piano={pianoSettimanale} 
+                    targetNutrizionale={targetNutrizionale}
+                  />
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <FileText size={48} className="mx-auto mb-4 opacity-50" />
+                    <p>Genera prima il tuo piano nutrizionale nella sezione "Genera Piano"</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="crea">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="text-purple-600" />
+                  Piano Nutrizionale CREA - Formato Tabellare Ufficiale
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {pianoCREA && targetNutrizionale ? (
+                  <CREAMealPlanTable 
+                    piano={pianoCREA} 
                     targetNutrizionale={targetNutrizionale}
                   />
                 ) : (
