@@ -1,5 +1,6 @@
 
 import { CREA_PORTIONS, CREA_DAILY_PORTIONS, CREAFood } from "@/data/creaPortion";
+import { recipes } from "@/data/recipes";
 
 export interface CREAMealPlan {
   settimana: number;
@@ -27,6 +28,7 @@ export interface CREADayPlan {
 
 export interface CREAMeal {
   nome: string;
+  ricetta?: string;
   alimenti: CREAFoodItem[];
   totali: {
     kcal: number;
@@ -49,18 +51,12 @@ export interface CREAFoodItem {
 
 const GIORNI_SETTIMANA = ["LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ", "GIOVEDÌ", "VENERDÌ", "SABATO", "DOMENICA"];
 
-// Schemi di rotazione per varietà settimanale
-const ROTAZIONI = {
-  cereali_colazione: ["Fette biscottate", "Cornflakes", "Pane"],
-  frutta_colazione: ["Marmellata"],
-  frutta_break_mattina: ["Mela", "Arancia", "Banana"],
-  cereali_pranzo: ["Pasta (cruda)", "Riso (crudo)", "Pasta (cruda)"],
-  proteine_pranzo: ["Legumi cotti (lenticchie)", "Formaggio stagionato", "Uova"],
-  verdure_pranzo: ["Fagiolini", "Spinaci cotti", "Carote", "Pomodori"],
-  frutta_break_pomeriggio: ["Banana", "Albicocche", "Mela"],
-  proteine_cena: ["Pollo (petto)", "Pesce (merluzzo)", "Carne rossa (bistecca)"],
-  verdure_cena: ["Spinaci cotti", "Insalata cruda", "Fagiolini", "Carote"],
-  frutta_cena: ["Anguria", "Albicocche", "Mela"]
+// Ricette CREA organizzate per pasto
+const RICETTE_CREA = {
+  colazione: ["Porridge avena e banana", "Latte, caffè e biscotti"],
+  pranzo: ["Pasta al pomodoro", "Risotto ai funghi", "Insalata di riso light", "Pasta e fagioli light", "Zuppa di lenticchie", "Insalata di quinoa e ceci", "Pasta integrale con zucchine e ricotta", "Riso integrale con lenticchie e spinaci"],
+  cena: ["Pollo arrosto con verdure", "Salmone grigliato", "Insalata proteica", "Omelette alle verdure", "Mozzarella in carrozza light", "Scaloppina light", "Filetto di trota al forno", "Polpette di lenticchie", "Frittata al forno con zucchine", "Burger di fagioli", "Merluzzo in umido con patate"],
+  spuntino: ["Toast integrale con hummus e avocado", "Crackers"]
 };
 
 export function generaCREAPiano3Settimane(
@@ -71,6 +67,9 @@ export function generaCREAPiano3Settimane(
 ): CREAMealPlan[] {
   const piano: CREAMealPlan[] = [];
   const dataInizio = new Date();
+
+  // Calcola fattori di scaling per adattare le porzioni al fabbisogno
+  const fattoreScaling = targetKcal / 2000; // 2000 kcal come base CREA standard
 
   for (let settimana = 1; settimana <= 3; settimana++) {
     const giorni: CREADayPlan[] = [];
@@ -86,6 +85,7 @@ export function generaCREAPiano3Settimane(
         targetProteine,
         targetCarboidrati,
         targetGrassi,
+        fattoreScaling,
         settimana,
         giorno
       );
@@ -109,26 +109,27 @@ function generaGiornoCREA(
   targetProteine: number,
   targetCarboidrati: number,
   targetGrassi: number,
+  fattoreScaling: number,
   settimana: number,
   indiceGiorno: number
 ): CREADayPlan {
-  // Distribuzione calorica per pasto (CREA)
+  // Distribuzione calorica per pasto secondo CREA
   const distribuzioneKcal = {
     colazione: 0.20, // 20%
     break_mattina: 0.05, // 5%
     pranzo: 0.40, // 40%
     break_pomeriggio: 0.05, // 5%
     cena: 0.30, // 30%
-    extra: 0.00 // Solo olio e pane extra
+    extra: 0.00 // Solo oli e integrazioni
   };
 
   const pasti = {
-    colazione: generaColazione(targetKcal * distribuzioneKcal.colazione, settimana, indiceGiorno),
-    break_mattina: generaBreakMattina(targetKcal * distribuzioneKcal.break_mattina, settimana, indiceGiorno),
-    pranzo: generaPranzo(targetKcal * distribuzioneKcal.pranzo, settimana, indiceGiorno),
-    break_pomeriggio: generaBreakPomeriggio(targetKcal * distribuzioneKcal.break_pomeriggio, settimana, indiceGiorno),
-    cena: generaCena(targetKcal * distribuzioneKcal.cena, settimana, indiceGiorno),
-    extra: generaExtra()
+    colazione: generaColazione(targetKcal * distribuzioneKcal.colazione, fattoreScaling, settimana, indiceGiorno),
+    break_mattina: generaBreakMattina(targetKcal * distribuzioneKcal.break_mattina, fattoreScaling, settimana, indiceGiorno),
+    pranzo: generaPranzo(targetKcal * distribuzioneKcal.pranzo, fattoreScaling, settimana, indiceGiorno),
+    break_pomeriggio: generaBreakPomeriggio(targetKcal * distribuzioneKcal.break_pomeriggio, fattoreScaling, settimana, indiceGiorno),
+    cena: generaCena(targetKcal * distribuzioneKcal.cena, fattoreScaling, settimana, indiceGiorno),
+    extra: generaExtra(fattoreScaling)
   };
 
   // Calcola totali giornalieri
@@ -142,42 +143,61 @@ function generaGiornoCREA(
   };
 }
 
-function generaColazione(targetKcal: number, settimana: number, giorno: number): CREAMeal {
+function generaColazione(targetKcal: number, fattoreScaling: number, settimana: number, giorno: number): CREAMeal {
   const alimenti: CREAFoodItem[] = [];
   
-  // Base: latte
-  const latte = trovaCibo("Latte parzialmente scremato");
-  if (latte) alimenti.push(convertToFoodItem(latte));
+  // Scegli ricetta rotante per varietà
+  const ricetteDisponibili = RICETTE_CREA.colazione;
+  const ricettaIndex = (settimana + giorno) % ricetteDisponibili.length;
+  const ricettaScelta = ricetteDisponibili[ricettaIndex];
   
-  // Caffè
-  const caffe = trovaCibo("Caffè");
-  if (caffe) alimenti.push(convertToFoodItem(caffe));
-  
-  // Cereale rotante
-  const cerealeIndex = (settimana + giorno) % ROTAZIONI.cereali_colazione.length;
-  const nomeCereale = ROTAZIONI.cereali_colazione[cerealeIndex];
-  const cereale = trovaCibo(nomeCereale);
-  if (cereale) alimenti.push(convertToFoodItem(cereale));
-  
-  // Marmellata
-  const marmellata = trovaCibo("Marmellata");
-  if (marmellata) alimenti.push(convertToFoodItem(marmellata));
+  if (recipes[ricettaScelta]) {
+    // Usa ingredienti dalla ricetta
+    const ricetta = recipes[ricettaScelta];
+    Object.entries(ricetta.ingredienti).forEach(([nomeIngrediente, quantitaStr]) => {
+      const creaFood = trovaCiboPerNome(nomeIngrediente);
+      if (creaFood) {
+        const quantitaScalata = Math.round(parseInt(quantitaStr) * fattoreScaling);
+        const item = convertToFoodItemScalato(creaFood, quantitaScalata);
+        alimenti.push(item);
+      }
+    });
+  } else {
+    // Fallback colazione standard
+    const latte = trovaCibo("Latte parzialmente scremato");
+    if (latte) alimenti.push(convertToFoodItemScalato(latte, Math.round(125 * fattoreScaling)));
+    
+    const caffe = trovaCibo("Caffè");
+    if (caffe) alimenti.push(convertToFoodItem(caffe));
+    
+    const fette = trovaCibo("Fette biscottate");
+    if (fette) alimenti.push(convertToFoodItemScalato(fette, Math.round(24 * fattoreScaling)));
+    
+    const marmellata = trovaCibo("Marmellata");
+    if (marmellata) alimenti.push(convertToFoodItemScalato(marmellata, Math.round(20 * fattoreScaling)));
+  }
 
   return {
     nome: "COLAZIONE",
+    ricetta: ricettaScelta,
     alimenti,
     totali: calcolaTotaliPasto(alimenti)
   };
 }
 
-function generaBreakMattina(targetKcal: number, settimana: number, giorno: number): CREAMeal {
+function generaBreakMattina(targetKcal: number, fattoreScaling: number, settimana: number, giorno: number): CREAMeal {
   const alimenti: CREAFoodItem[] = [];
   
-  // Frutta rotante
-  const fruttaIndex = (settimana + giorno) % ROTAZIONI.frutta_break_mattina.length;
-  const nomeFrutta = ROTAZIONI.frutta_break_mattina[fruttaIndex];
-  const frutta = trovaCibo(nomeFrutta);
-  if (frutta) alimenti.push(convertToFoodItem(frutta));
+  // Rotazione frutta stagionale
+  const frutti = ["Mela", "Arancia", "Banana", "Albicocche"];
+  const fruttaIndex = (settimana + giorno) % frutti.length;
+  const fruttaScelta = frutti[fruttaIndex];
+  
+  const frutta = trovaCibo(fruttaScelta);
+  if (frutta) {
+    const quantitaScalata = Math.round(frutta.porzione_g * fattoreScaling);
+    alimenti.push(convertToFoodItemScalato(frutta, quantitaScalata));
+  }
 
   return {
     nome: "BREAK MATTUTINO",
@@ -186,64 +206,66 @@ function generaBreakMattina(targetKcal: number, settimana: number, giorno: numbe
   };
 }
 
-function generaPranzo(targetKcal: number, settimana: number, giorno: number): CREAMeal {
+function generaPranzo(targetKcal: number, fattoreScaling: number, settimana: number, giorno: number): CREAMeal {
   const alimenti: CREAFoodItem[] = [];
   
-  // Cereale primo piatto
-  const cerealeIndex = (settimana + giorno) % ROTAZIONI.cereali_pranzo.length;
-  const nomeCereale = ROTAZIONI.cereali_pranzo[cerealeIndex];
-  const cereale = trovaCibo(nomeCereale);
-  if (cereale) alimenti.push(convertToFoodItem(cereale));
+  // Scegli ricetta rotante
+  const ricetteDisponibili = RICETTE_CREA.pranzo;
+  const ricettaIndex = (settimana + giorno) % ricetteDisponibili.length;
+  const ricettaScelta = ricetteDisponibili[ricettaIndex];
   
-  // Verdura
-  const verduraIndex = (settimana + giorno) % ROTAZIONI.verdure_pranzo.length;
-  const nomeVerdura = ROTAZIONI.verdure_pranzo[verduraIndex];
-  const verdura = trovaCibo(nomeVerdura);
-  if (verdura) alimenti.push(convertToFoodItem(verdura));
-  
-  // Frutta
-  if (giorno % 2 === 0) { // Frutta a pranzo giorni alterni
-    const fruttaIndex = giorno % ROTAZIONI.frutta_break_pomeriggio.length;
-    const nomeFrutta = ROTAZIONI.frutta_break_pomeriggio[fruttaIndex];
-    const frutta = trovaCibo(nomeFrutta);
-    if (frutta) alimenti.push(convertToFoodItem(frutta));
+  if (recipes[ricettaScelta]) {
+    const ricetta = recipes[ricettaScelta];
+    Object.entries(ricetta.ingredienti).forEach(([nomeIngrediente, quantitaStr]) => {
+      const creaFood = trovaCiboPerNome(nomeIngrediente);
+      if (creaFood) {
+        const quantitaScalata = Math.round(parseInt(quantitaStr) * fattoreScaling);
+        const item = convertToFoodItemScalato(creaFood, quantitaScalata);
+        alimenti.push(item);
+      }
+    });
+  } else {
+    // Fallback pranzo standard
+    const cereali = ["Pasta (cruda)", "Riso (crudo)"];
+    const cerealeIndex = (settimana + giorno) % cereali.length;
+    const cereale = trovaCibo(cereali[cerealeIndex]);
+    if (cereale) alimenti.push(convertToFoodItemScalato(cereale, Math.round(80 * fattoreScaling)));
+    
+    const verdure = ["Fagiolini", "Spinaci cotti", "Carote", "Pomodori"];
+    const verduraIndex = (settimana + giorno + 1) % verdure.length;
+    const verdura = trovaCibo(verdure[verduraIndex]);
+    if (verdura) alimenti.push(convertToFoodItem(verdura));
+  }
+
+  // Aggiungi sempre olio per il pranzo
+  const olio = trovaCibo("Olio extravergine di oliva");
+  if (olio) {
+    const olioItem = convertToFoodItemScalato(olio, Math.round(10 * fattoreScaling));
+    alimenti.push(olioItem);
   }
 
   return {
     nome: "PRANZO",
+    ricetta: ricettaScelta,
     alimenti,
     totali: calcolaTotaliPasto(alimenti)
   };
 }
 
-function generaBreakPomeriggio(targetKcal: number, settimana: number, giorno: number): CREAMeal {
+function generaBreakPomeriggio(targetKcal: number, fattoreScaling: number, settimana: number, giorno: number): CREAMeal {
   const alimenti: CREAFoodItem[] = [];
   
   // Alternanza: frutta o yogurt
   if (giorno % 2 === 0) {
-    // Yogurt + frutta piccola
     const yogurt = trovaCibo("Yogurt greco 0%");
     if (yogurt) {
-      const yogurtItem = convertToFoodItem(yogurt);
-      yogurtItem.quantita_g = 100; // Porzione ridotta
-      yogurtItem.kcal = 51;
-      yogurtItem.proteine = 9;
-      alimenti.push(yogurtItem);
-    }
-    
-    const mela = trovaCibo("Mela");
-    if (mela) {
-      const melaItem = convertToFoodItem(mela);
-      melaItem.quantita_g = 50; // Mela piccola
-      melaItem.kcal = 22;
-      melaItem.proteine = 0.1;
-      alimenti.push(melaItem);
+      const quantitaScalata = Math.round(100 * fattoreScaling);
+      alimenti.push(convertToFoodItemScalato(yogurt, quantitaScalata));
     }
   } else {
-    // Solo frutta
-    const fruttaIndex = (settimana + giorno) % ROTAZIONI.frutta_break_pomeriggio.length;
-    const nomeFrutta = ROTAZIONI.frutta_break_pomeriggio[fruttaIndex];
-    const frutta = trovaCibo(nomeFrutta);
+    const frutti = ["Banana", "Albicocche", "Anguria"];
+    const fruttaIndex = giorno % frutti.length;
+    const frutta = trovaCibo(frutti[fruttaIndex]);
     if (frutta) alimenti.push(convertToFoodItem(frutta));
   }
 
@@ -254,57 +276,60 @@ function generaBreakPomeriggio(targetKcal: number, settimana: number, giorno: nu
   };
 }
 
-function generaCena(targetKcal: number, settimana: number, giorno: number): CREAMeal {
+function generaCena(targetKcal: number, fattoreScaling: number, settimana: number, giorno: number): CREAMeal {
   const alimenti: CREAFoodItem[] = [];
   
-  // Proteina principale rotante
-  const proteinaIndex = (settimana + giorno) % ROTAZIONI.proteine_cena.length;
-  const nomeProteina = ROTAZIONI.proteine_cena[proteinaIndex];
-  const proteina = trovaCibo(nomeProteina);
-  if (proteina) alimenti.push(convertToFoodItem(proteina));
+  // Scegli ricetta rotante
+  const ricetteDisponibili = RICETTE_CREA.cena;
+  const ricettaIndex = (settimana + giorno) % ricetteDisponibili.length;
+  const ricettaScelta = ricetteDisponibili[ricettaIndex];
   
-  // Verdura
-  const verduraIndex = (settimana + giorno + 1) % ROTAZIONI.verdure_cena.length;
-  const nomeVerdura = ROTAZIONI.verdure_cena[verduraIndex];
-  const verdura = trovaCibo(nomeVerdura);
-  if (verdura) alimenti.push(convertToFoodItem(verdura));
-  
-  // Frutta
-  const fruttaIndex = (settimana + giorno) % ROTAZIONI.frutta_cena.length;
-  const nomeFrutta = ROTAZIONI.frutta_cena[fruttaIndex];
-  const frutta = trovaCibo(nomeFrutta);
-  if (frutta) alimenti.push(convertToFoodItem(frutta));
+  if (recipes[ricettaScelta]) {
+    const ricetta = recipes[ricettaScelta];
+    Object.entries(ricetta.ingredienti).forEach(([nomeIngrediente, quantitaStr]) => {
+      const creaFood = trovaCiboPerNome(nomeIngrediente);
+      if (creaFood) {
+        const quantitaScalata = Math.round(parseInt(quantitaStr) * fattoreScaling);
+        const item = convertToFoodItemScalato(creaFood, quantitaScalata);
+        alimenti.push(item);
+      }
+    });
+  } else {
+    // Fallback cena standard
+    const proteine = ["Pollo (petto)", "Pesce (merluzzo)", "Carne rossa (bistecca)"];
+    const proteinaIndex = (settimana + giorno) % proteine.length;
+    const proteina = trovaCibo(proteine[proteinaIndex]);
+    if (proteina) alimenti.push(convertToFoodItem(proteina));
+    
+    const verdure = ["Spinaci cotti", "Insalata cruda", "Carote"];
+    const verduraIndex = (settimana + giorno + 2) % verdure.length;
+    const verdura = trovaCibo(verdure[verduraIndex]);
+    if (verdura) alimenti.push(convertToFoodItem(verdura));
+  }
 
   return {
     nome: "CENA",
+    ricetta: ricettaScelta,
     alimenti,
     totali: calcolaTotaliPasto(alimenti)
   };
 }
 
-function generaExtra(): CREAMeal {
+function generaExtra(fattoreScaling: number): CREAMeal {
   const alimenti: CREAFoodItem[] = [];
-  
-  // Olio EVO giornaliero (2 cucchiai = 20g)
-  const olio = trovaCibo("Olio extravergine di oliva");
-  if (olio) {
-    const olioItem = convertToFoodItem(olio);
-    olioItem.quantita_g = 20; // 2 cucchiai
-    olioItem.quantita_unita = "2 cucchiai";
-    olioItem.kcal = 180;
-    olioItem.grassi = 20;
-    alimenti.push(olioItem);
-  }
   
   // Pane extra
   const pane = trovaCibo("Pane");
   if (pane) {
-    const paneItem = convertToFoodItem(pane);
-    paneItem.quantita_g = 70; // Porzione aggiuntiva
-    paneItem.kcal = 189;
-    paneItem.proteine = 6.3;
-    paneItem.carboidrati = 35;
-    alimenti.push(paneItem);
+    const quantitaScalata = Math.round(50 * fattoreScaling);
+    alimenti.push(convertToFoodItemScalato(pane, quantitaScalata));
+  }
+  
+  // Olio EVO aggiuntivo
+  const olio = trovaCibo("Olio extravergine di oliva");
+  if (olio) {
+    const quantitaScalata = Math.round(10 * fattoreScaling);
+    alimenti.push(convertToFoodItemScalato(olio, quantitaScalata));
   }
 
   return {
@@ -316,6 +341,56 @@ function generaExtra(): CREAMeal {
 
 function trovaCibo(nome: string): CREAFood | undefined {
   return CREA_PORTIONS.find(food => food.nome === nome);
+}
+
+function trovaCiboPerNome(nomeRicerca: string): CREAFood | undefined {
+  // Mappatura ingredienti ricette -> alimenti CREA
+  const mappature: { [key: string]: string } = {
+    "Latte scremato": "Latte parzialmente scremato",
+    "Latte parzialmente scremato": "Latte parzialmente scremato",
+    "Pane integrale": "Pane",
+    "Pasta integrale": "Pasta (cruda)",
+    "Pasta di semola": "Pasta (cruda)",
+    "Riso basmati": "Riso (crudo)",
+    "Riso": "Riso (crudo)",
+    "Pomodori maturi": "Pomodori",
+    "Pomodorini": "Pomodori",
+    "Petto di pollo": "Pollo (petto)",
+    "Cosce di pollo senza pelle": "Pollo (petto)",
+    "Filetto di salmone": "Pesce (merluzzo)",
+    "Filetto di trota": "Pesce (merluzzo)",
+    "Filetto di merluzzo": "Pesce (merluzzo)",
+    "Vitello a bocconcini": "Carne rossa (bistecca)",
+    "Fettine di pollo o vitello": "Pollo (petto)",
+    "Uova": "Uova",
+    "Uovo": "Uova",
+    "Uovo intero": "Uova",
+    "Zucchine": "Carote",
+    "Broccoli": "Spinaci cotti",
+    "Spinaci": "Spinaci cotti",
+    "Carote": "Carote",
+    "Carota": "Carote",
+    "Insalata": "Insalata cruda",
+    "Banana": "Banana",
+    "Fiocchi d'avena": "Cornflakes",
+    "Biscotti": "Fette biscottate",
+    "Miele": "Marmellata",
+    "Yogurt greco magro": "Yogurt greco 0%",
+    "Ricotta light": "Formaggio stagionato",
+    "Parmigiano": "Formaggio stagionato",
+    "Parmigiano reggiano": "Formaggio stagionato",
+    "Tonno al naturale": "Pesce (merluzzo)",
+    "Tonno in scatola": "Pesce (merluzzo)",
+    "Lenticchie lessate": "Legumi cotti (lenticchie)",
+    "Lenticchie": "Legumi cotti (lenticchie)",
+    "Ceci lessati": "Legumi cotti (lenticchie)",
+    "Fagioli cannellini": "Legumi cotti (lenticchie)",
+    "Fagioli borlotti lessati": "Legumi cotti (lenticchie)",
+    "Quinoa": "Riso (crudo)"
+  };
+
+  const nomeMapping = mappature[nomeRicerca] || nomeRicerca;
+  return CREA_PORTIONS.find(food => food.nome === nomeMapping);
 }
 
 function convertToFoodItem(creaFood: CREAFood): CREAFoodItem {
@@ -330,7 +405,27 @@ function convertToFoodItem(creaFood: CREAFood): CREAFoodItem {
     isPezzo: creaFood.porzione_unita.includes("pz") || 
              creaFood.porzione_unita.includes("uovo") || 
              creaFood.porzione_unita.includes("tazza") ||
-             creaFood.porzione_unita.includes("frutto")
+             creaFood.porzione_unita.includes("frutto") ||
+             creaFood.porzione_unita.includes("cucchiaio")
+  };
+}
+
+function convertToFoodItemScalato(creaFood: CREAFood, nuovaQuantita: number): CREAFoodItem {
+  const fattore = nuovaQuantita / creaFood.porzione_g;
+  
+  return {
+    nome: creaFood.nome,
+    quantita_g: nuovaQuantita,
+    quantita_unita: creaFood.porzione_unita,
+    kcal: Math.round(creaFood.kcal_per_porzione * fattore * 10) / 10,
+    proteine: Math.round(creaFood.proteine_per_porzione * fattore * 10) / 10,
+    carboidrati: Math.round(creaFood.carboidrati_per_porzione * fattore * 10) / 10,
+    grassi: Math.round(creaFood.grassi_per_porzione * fattore * 10) / 10,
+    isPezzo: creaFood.porzione_unita.includes("pz") || 
+             creaFood.porzione_unita.includes("uovo") || 
+             creaFood.porzione_unita.includes("tazza") ||
+             creaFood.porzione_unita.includes("frutto") ||
+             creaFood.porzione_unita.includes("cucchiaio")
   };
 }
 

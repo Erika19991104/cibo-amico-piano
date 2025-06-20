@@ -1,8 +1,6 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { WeeklyPlan } from "@/utils/mealPlanGenerator";
 
 interface DetailedMealPlanProps {
@@ -108,12 +106,12 @@ export const DetailedMealPlan = ({ piano, targetNutrizionale }: DetailedMealPlan
                         <div className="flex justify-between items-center mb-3">
                           <h3 className="text-lg font-semibold text-gray-800">{nome}</h3>
                           <div className="flex gap-2">
-                            <Badge variant="outline">
+                            <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm font-medium">
                               {Math.round(totalePastoKcal)} kcal
-                            </Badge>
-                            <Badge variant="outline">
+                            </span>
+                            <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-medium">
                               {Math.round(totalePastoProteine * 10) / 10}g proteine
-                            </Badge>
+                            </span>
                           </div>
                         </div>
                         

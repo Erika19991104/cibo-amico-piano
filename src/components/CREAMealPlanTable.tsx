@@ -88,9 +88,11 @@ export const CREAMealPlanTable = ({ piano, targetNutrizionale }: CREAMealPlanTab
                           <h3 className="text-lg font-bold text-gray-800 uppercase bg-gray-100 px-3 py-1 rounded">
                             {nomePasto.replace('_', ' ')}
                           </h3>
-                          <Badge variant="outline" className="text-sm">
-                            {pasto.totali.kcal} kcal
-                          </Badge>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium px-2 py-1 bg-blue-100 text-blue-800 rounded">
+                              {pasto.totali.kcal} kcal
+                            </span>
+                          </div>
                         </div>
                         
                         <Table className="border">
