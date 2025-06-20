@@ -4,70 +4,97 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileForm } from "@/components/ProfileForm";
 import { FoodSearch } from "@/components/FoodSearch";
-import MealPlan from "@/components/MealPlan"; // import senza parentesi
+import MealPlan from "@/components/MealPlan";
 import { User, Calculator, Search, UtensilsCrossed } from "lucide-react";
+import { generaPianoAvanzato, calculateBMR, calculateTDEE, calculateMacrosTarget } from "@/utils/nutritionUtils";
+import { foodDatabase } from "@/data/foodDatabase";
 
-import { recipes } from "../data/recipes";
+const foodArray = Object.values(foodDatabase);
+
+interface UserProfile {
+  sesso: "M" | "F";
+  peso: number;
+  altezza: number;
+  eta: number;
+  attivita: string;
+}
+
+type RecipePortion = {
+  recipe: {
+    id: string;
+    name: string;
+    Energia: number;
+    proteine: number;
+    carboidrati: number;
+    grassi: number;
+    ingredienti?: object;
+  };
+  portion: number;
+};
+
+type Meal = {
+  categoria: string;
+  ricette: RecipePortion[];
+};
 
 const Index = () => {
-  const [userProfile, setUserProfile] = useState(null);
-  const [mealPlan, setMealPlan] = useState(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [mealPlan, setMealPlan] = useState<Meal[] | null>(null);
+  const [summary, setSummary] = useState<{
+    bmr: number;
+    tdee: number;
+    targetMacros: { carboidrati: number; proteine: number; grassi: number };
+  } | null>(null);
 
   const handleGenerateMealPlan = () => {
-    console.log("Funzione handleGenerateMealPlan chiamata");
-    alert("Funzione handleGenerateMealPlan chiamata");
-
     if (!userProfile) {
       console.log("Nessun profilo utente presente");
       return;
     }
 
-    const totalCalories = userProfile.calorieTarget || 2000;
+    const bmr = calculateBMR(userProfile.sesso, userProfile.peso, userProfile.altezza, userProfile.eta);
+    const tdee = calculateTDEE(bmr, userProfile.attivita);
+    const macros = calculateMacrosTarget(tdee);
 
-    const mealDistribution: Record<string, number> = {
-      Colazione: 0.25,
-      Pranzo: 0.35,
-      Cena: 0.3,
-      Spuntino: 0.1,
-    };
+    setSummary({ bmr: Math.round(bmr), tdee: Math.round(tdee), targetMacros: macros });
 
-    // Se recipes è un oggetto, usa Object.values, altrimenti usa direttamente recipes
-    const recipesArray = Array.isArray(recipes) ? recipes : Object.values(recipes);
+    const rawPlan = generaPianoAvanzato(macros, foodArray);
 
-    const mealPlan = Object.entries(mealDistribution).map(([meal, percent]) => {
-      const targetCalories = totalCalories * percent;
+    const colazioneFoods = rawPlan.slice(0, 3);
+    const pranzoFoods = rawPlan.slice(3, 6);
+    const cenaFoods = rawPlan.slice(6, 9);
 
-      // Filtra ricette in base a mealTime o category
-      const mealRecipes = recipesArray.filter((r) => {
-        if (r.mealTime) {
-          return r.mealTime.toLowerCase() === meal.toLowerCase();
-        } else if (r.mealTime && Array.isArray(r.mealTime)) {
-          return r.mealTime.some((cat) => cat.toLowerCase() === meal.toLowerCase());
-        }
-        return false;
-      });
+    function foodToRecipePortion(food: typeof rawPlan[0]): RecipePortion {
+      return {
+        recipe: {
+          id: String(food.indice ?? "0"),
+          name: food.descrizione ?? "Sconosciuto",
+          Energia: food.Energia ?? 0,
+          proteine: food.Proteine ?? 0,
+          carboidrati: food.Carboidrati_totali ?? 0,
+          grassi: food.Lipidi_totali ?? 0,
+          ingredienti: {},
+        },
+        portion: 1,
+      };
+    }
 
-      console.log(`Ricette per ${meal}:`, mealRecipes);
+    const mealPlanFormatted: Meal[] = [
+      {
+        categoria: "Colazione",
+        ricette: colazioneFoods.map(foodToRecipePortion),
+      },
+      {
+        categoria: "Pranzo",
+        ricette: pranzoFoods.map(foodToRecipePortion),
+      },
+      {
+        categoria: "Cena",
+        ricette: cenaFoods.map(foodToRecipePortion),
+      },
+    ];
 
-      let accCalories = 0;
-      const selectedRecipes = [];
-
-      for (const recipe of mealRecipes) {
-        if (accCalories >= targetCalories) break;
-
-        const calories = recipe.calories || 0;
-        // Calcolo porzione per non superare le calorie target
-        const portion = Math.min(1, (targetCalories - accCalories) / (calories || 1));
-
-        accCalories += portion * calories;
-
-        selectedRecipes.push({ recipe, portion });
-      }
-
-      return { categoria: meal, ricette: selectedRecipes };
-    });
-
-    setMealPlan(mealPlan);
+    setMealPlan(mealPlanFormatted);
   };
 
   return (
@@ -169,8 +196,35 @@ const Index = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {mealPlan ? (
-                  <MealPlan mealPlan={mealPlan} />
+                {mealPlan && summary ? (
+                  <div className="space-y-6">
+                    <div>
+                      <h2 className="text-xl font-semibold mb-2">Fabbisogno Giornaliero</h2>
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
+                        <div className="p-2 bg-gray-50 rounded text-center">
+                          <p className="text-sm text-gray-500">BMR (kcal)</p>
+                          <p className="text-lg font-medium">{summary.bmr}</p>
+                        </div>
+                        <div className="p-2 bg-gray-50 rounded text-center">
+                          <p className="text-sm text-gray-500">TDEE (kcal)</p>
+                          <p className="text-lg font-medium">{summary.tdee}</p>
+                        </div>
+                        <div className="p-2 bg-gray-50 rounded text-center">
+                          <p className="text-sm text-gray-500">Carboidrati (g)</p>
+                          <p className="text-lg font-medium">{Math.round(summary.targetMacros.carboidrati)}</p>
+                        </div>
+                        <div className="p-2 bg-gray-50 rounded text-center">
+                          <p className="text-sm text-gray-500">Proteine (g)</p>
+                          <p className="text-lg font-medium">{Math.round(summary.targetMacros.proteine)}</p>
+                        </div>
+                        <div className="p-2 bg-gray-50 rounded text-center">
+                          <p className="text-sm text-gray-500">Grassi (g)</p>
+                          <p className="text-lg font-medium">{Math.round(summary.targetMacros.grassi)}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <MealPlan mealPlan={mealPlan} />
+                  </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
                     <Calculator size={48} className="mx-auto mb-4 opacity-50" />

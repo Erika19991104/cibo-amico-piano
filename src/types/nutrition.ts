@@ -1,10 +1,45 @@
 
 export interface FoodItem {
+  indice?: number;               // opzionale, può servire come ID
   categoria: string;
-  Energia: number;
-  Proteine: number;
-  Lipidi: number;
-  Carboidrati: number;
+  descrizione?: string;
+  allergeni?: string;
+  peso_porzione?: number;
+  unita_misura?: string;
+
+  Energia?: number;
+  Proteine?: number;
+  Lipidi_totali?: number;
+  Grassi_saturi?: number;
+  Grassi_monoinsaturi?: number;
+  Grassi_polinsaturi?: number;
+  Acidi_grassi_trans?: number;
+  Carboidrati_totali?: number;
+  Zuccheri_semplici?: number;
+  Amido?: number;
+  Fibre?: number;
+  Acqua?: number;
+
+  Vitamina_A?: number;
+  Vitamina_C?: number;
+  Vitamina_D?: number;
+  Vitamina_E?: number;
+  Vitamina_B1?: number;
+  Vitamina_B2?: number;
+  Vitamina_B3?: number;
+  Vitamina_B6?: number;
+  Vitamina_B9?: number;
+  Vitamina_B12?: number;
+  Vitamina_K?: number;
+
+  Calcio?: number;
+  Ferro?: number;
+  Magnesio?: number;
+  Potassio?: number;
+  Sodio?: number;
+  Zinco?: number;
+  Colesterolo?: number;
+  Alcool?: number;
 }
 
 export interface Recipe {

@@ -1,160 +1,136 @@
+export interface FoodItem {
+  indice?: number; // opzionale, può servire come ID
+  categoria: string;
+  descrizione?: string;
+  allergeni?: string;
+  peso_porzione?: number;
+  unita_misura?: string;
 
-import { FoodDatabase, RecipeDatabase, MacroNutrients, DailyMenu, MealData, Recipe, FoodItem } from "@/types/nutrition";
+  Energia?: number;
+  Proteine?: number;
+  Lipidi_totali?: number;
+  Grassi_saturi?: number;
+  Grassi_monoinsaturi?: number;
+  Grassi_polinsaturi?: number;
+  Acidi_grassi_trans?: number;
+  Carboidrati_totali?: number;
+  Zuccheri_semplici?: number;
+  Amido?: number;
+  Fibre?: number;
+  Acqua?: number;
 
-export const calculateBMR = (sesso: string, peso: number, altezza: number, eta: number): number => {
-  if (sesso === "Uomo") {
-    return 10 * peso + 6.25 * altezza - 5 * eta + 5;
+  Vitamina_A?: number;
+  Vitamina_C?: number;
+  Vitamina_D?: number;
+  Vitamina_E?: number;
+  Vitamina_B1?: number;
+  Vitamina_B2?: number;
+  Vitamina_B3?: number;
+  Vitamina_B6?: number;
+  Vitamina_B9?: number;
+  Vitamina_B12?: number;
+  Vitamina_K?: number;
+
+  Calcio?: number;
+  Ferro?: number;
+  Magnesio?: number;
+  Potassio?: number;
+  Sodio?: number;
+  Zinco?: number;
+  Colesterolo?: number;
+  Alcool?: number;
+}
+
+export interface Macros {
+  carboidrati: number;
+  proteine: number;
+  grassi: number;
+}
+
+export type Sesso = "M" | "F";
+
+export function calculateBMR(sesso: Sesso, peso: number, altezza: number, eta: number): number {
+  if (sesso === "M") {
+    return 88.362 + 13.397 * peso + 4.799 * altezza - 5.677 * eta;
   } else {
-    return 10 * peso + 6.25 * altezza - 5 * eta - 161;
+    return 447.593 + 9.247 * peso + 3.098 * altezza - 4.330 * eta;
   }
-};
+}
 
-export const calculateTDEE = (bmr: number, attivita: string): number => {
-  const factors = {
-    "Sedentario": 1.2,
-    "Leggero": 1.375,
-    "Moderato": 1.55,
-    "Intenso": 1.725,
-    "Molto intenso": 1.9
+export function calculateTDEE(bmr: number, livelloAttivita: string): number {
+  const fattori: Record<string, number> = {
+    sedentario: 1.2,
+    leggero: 1.375,
+    moderato: 1.55,
+    intenso: 1.725,
+    molto_intenso: 1.9,
   };
-  return bmr * factors[attivita as keyof typeof factors];
-};
 
-export const calculateMacrosTarget = (tdee: number): MacroNutrients => {
+  const fattore = fattori[livelloAttivita.toLowerCase()] ?? 1.2;
+
+  return bmr * fattore;
+}
+
+export function calculateMacrosTarget(tdee: number): Macros {
   return {
-    carboidrati: (tdee * 0.50) / 4,
-    proteine: (tdee * 0.20) / 4,
-    grassi: (tdee * 0.30) / 9
+    carboidrati: (tdee * 0.5) / 4,
+    proteine: (tdee * 0.2) / 4,
+    grassi: (tdee * 0.3) / 9,
   };
-};
+}
 
-export const distributeMeals = (tdee: number): { [key: string]: number } => {
-  return {
-    "Colazione": Math.round(tdee * 0.20),
-    "Spuntino mattina": Math.round(tdee * 0.10),
-    "Pranzo": Math.round(tdee * 0.35),
-    "Spuntino pomeriggio": Math.round(tdee * 0.10),
-    "Cena": Math.round(tdee * 0.25)
-  };
-};
+export function scoreFoodItem(food: FoodItem, gaps: Macros): number {
+  const weightCarbo = 1;
+  const weightProteine = 1.5;
+  const weightGrassi = 1;
 
-export const macrosPerMeal = (totalMacros: MacroNutrients): { [key: string]: MacroNutrients } => {
-  const percentages = {
-    "Colazione": { carboidrati: 0.25, proteine: 0.20, grassi: 0.20 },
-    "Spuntino mattina": { carboidrati: 0.10, proteine: 0.10, grassi: 0.10 },
-    "Pranzo": { carboidrati: 0.30, proteine: 0.35, grassi: 0.35 },
-    "Spuntino pomeriggio": { carboidrati: 0.10, proteine: 0.10, grassi: 0.10 },
-    "Cena": { carboidrati: 0.25, proteine: 0.25, grassi: 0.25 }
-  };
+  // Usa i valori, o 0 se undefined
+  const carbo = food.Carboidrati_totali ?? 0;
+  const proteine = food.Proteine ?? 0;
+  const lipidi = food.Lipidi_totali ?? 0;
 
-  const mealMacros: { [key: string]: MacroNutrients } = {};
-  for (const [meal, perc] of Object.entries(percentages)) {
-    mealMacros[meal] = {
-      carboidrati: totalMacros.carboidrati * perc.carboidrati,
-      proteine: totalMacros.proteine * perc.proteine,
-      grassi: totalMacros.grassi * perc.grassi
-    };
-  }
-  return mealMacros;
-};
+  const score =
+    Math.min(carbo, gaps.carboidrati) * weightCarbo +
+    Math.min(proteine, gaps.proteine) * weightProteine +
+    Math.min(lipidi, gaps.grassi) * weightGrassi;
 
-export const calculateRecipeValues = (recipe: Recipe, foodDb: FoodDatabase): { Energia: number; Proteine: number; Grassi: number; Carboidrati: number } => {
-  const results = { Energia: 0, Proteine: 0, Grassi: 0, Carboidrati: 0 };
-  
-  for (const [ingredient, quantity] of Object.entries(recipe.ingredienti)) {
-    const cleanName = ingredient.split(" (")[0].trim().toLowerCase();
-    const q = parseFloat(quantity);
+  return score;
+}
 
-    // Ricerca diretta nel database
-    const foundFood = Object.entries(foodDb).find(([name]) => 
-      name.toLowerCase().includes(cleanName) || cleanName.includes(name.toLowerCase())
-    );
+export function generaPianoAvanzato(
+  targetMacros: Macros,
+  foodDatabase: FoodItem[],
+  maxIter: number = 50
+): FoodItem[] {
+  let piano: FoodItem[] = [];
+  let macroAttuali: Macros = { carboidrati: 0, proteine: 0, grassi: 0 };
 
-    if (foundFood) {
-      const [, values]: [string, FoodItem] = foundFood;
-      results.Energia += values.Energia * q / 100;
-      results.Proteine += values.Proteine * q / 100;
-      results.Grassi += values.Lipidi * q / 100;
-      results.Carboidrati += values.Carboidrati * q / 100;
-    }
-  }
-  
-  return results;
-};
-
-export const generateDailyMenu = (foodDb: FoodDatabase, recipes: RecipeDatabase, mealKcal: { [key: string]: number }, totalMacros: MacroNutrients): DailyMenu => {
-  const menu: DailyMenu = {};
-  const mealMacros = macrosPerMeal(totalMacros);
-  
-  // Inizializza tutti i pasti
-  for (const [meal, kcal] of Object.entries(mealKcal)) {
-    menu[meal] = {
-      ricetta: null,
-      ingredienti_ricetta: {},
-      ingredienti_extra: [],
-      kcal_tot: 0,
-      macro_tot: { carboidrati: 0, proteine: 0, grassi: 0 }
-    };
-  }
-
-  // Aggiungi ricette a pranzo e cena
-  const mealsWithRecipes = ["Pranzo", "Cena"];
-  for (const meal of mealsWithRecipes) {
-    const recipeNames = Object.keys(recipes);
-    const randomRecipe = recipeNames[Math.floor(Math.random() * recipeNames.length)];
-    
-    menu[meal].ricetta = randomRecipe;
-    menu[meal].ingredienti_ricetta = recipes[randomRecipe].ingredienti;
-    
-    const values = calculateRecipeValues(recipes[randomRecipe], foodDb);
-    menu[meal].kcal_tot += values.Energia;
-    menu[meal].macro_tot.carboidrati += values.Carboidrati;
-    menu[meal].macro_tot.proteine += values.Proteine;
-    menu[meal].macro_tot.grassi += values.Grassi;
-  }
-
-  // Aggiungi ingredienti extra per bilanciare i macros
-  for (const [meal, data] of Object.entries(menu)) {
-    const targetMacros = mealMacros[meal];
-    const remainingMacros = {
-      carboidrati: Math.max(targetMacros.carboidrati - data.macro_tot.carboidrati, 0),
-      proteine: Math.max(targetMacros.proteine - data.macro_tot.proteine, 0),
-      grassi: Math.max(targetMacros.grassi - data.macro_tot.grassi, 0)
+  for (let i = 0; i < maxIter; i++) {
+    const gaps: Macros = {
+      carboidrati: Math.max(0, targetMacros.carboidrati - macroAttuali.carboidrati),
+      proteine: Math.max(0, targetMacros.proteine - macroAttuali.proteine),
+      grassi: Math.max(0, targetMacros.grassi - macroAttuali.grassi),
     };
 
-    const foodEntries = Object.entries(foodDb);
-    const shuffledFoods = foodEntries.sort(() => Math.random() - 0.5);
-    
-    for (const [foodName, values] of shuffledFoods) {
-      if (data.kcal_tot >= mealKcal[meal] * 1.1) break;
-      
-      let quantity = 0;
-      
-      // Calcola quantità basata sui macros mancanti
-      if (remainingMacros.proteine > 0 && values.Proteine > 0) {
-        quantity = (remainingMacros.proteine / values.Proteine) * 100;
-      }
-      
-      if (quantity >= 20 && quantity <= 200) {
-        const additionalKcal = values.Energia * quantity / 100;
-        
-        if (data.kcal_tot + additionalKcal <= mealKcal[meal] * 1.1) {
-          data.ingredienti_extra.push([foodName, Math.round(quantity * 10) / 10]);
-          data.kcal_tot += additionalKcal;
-          data.macro_tot.proteine += values.Proteine * quantity / 100;
-          data.macro_tot.carboidrati += values.Carboidrati * quantity / 100;
-          data.macro_tot.grassi += values.Lipidi * quantity / 100;
-          
-          // Aggiorna macros rimanenti
-          remainingMacros.proteine = Math.max(remainingMacros.proteine - values.Proteine * quantity / 100, 0);
-          remainingMacros.carboidrati = Math.max(remainingMacros.carboidrati - values.Carboidrati * quantity / 100, 0);
-          remainingMacros.grassi = Math.max(remainingMacros.grassi - values.Lipidi * quantity / 100, 0);
-        }
-      }
-      
-      if (Object.values(remainingMacros).every(x => x <= 0)) break;
-    }
+    // Se siamo molto vicini (meno di 5g per macro), fermati
+    if (gaps.carboidrati < 5 && gaps.proteine < 5 && gaps.grassi < 5) break;
+
+    const scoredFoods = foodDatabase.map(food => ({
+      food,
+      score: scoreFoodItem(food, gaps),
+    }));
+
+    // Se non ci sono alimenti validi (tutti score 0), esci
+    const bestFood = scoredFoods.reduce((max, item) => (item.score > max.score ? item : max), scoredFoods[0]);
+
+    if (bestFood.score === 0) break;
+
+    piano.push(bestFood.food);
+
+    macroAttuali.carboidrati += bestFood.food.Carboidrati_totali ?? 0;
+    macroAttuali.proteine += bestFood.food.Proteine ?? 0;
+    macroAttuali.grassi += bestFood.food.Lipidi_totali ?? 0;
   }
 
-  return menu;
-};
+  return piano;
+}
